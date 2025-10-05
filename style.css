@@ -1,0 +1,436 @@
+    :root {
+        --fg: #1d1d1f;
+        --bg-panel: rgba(255, 255, 255, 0.75);
+        --bg-card: rgba(255, 255, 255, 0.9);
+        --border: rgba(0, 0, 0, 0.1);
+        --shadow: rgba(0, 0, 0, 0.1);
+        --accent: #007AFF;
+    }
+
+    [data-theme="neon-dark"] {
+        --bg1: #0b0014;
+        --bg2: #1a0033;
+        --accent: #7b61ff;
+        --particle1: #00ffff;
+        --particle2: #ff00ff;
+        --fg: #ffffff;
+        --bg-panel: rgba(30, 30, 40, 0.8);
+        --bg-card: rgba(40, 40, 50, 0.9);
+    }
+
+    [data-theme="aurora-light"] {
+        --bg1: #f0faff;
+        --bg2: #d6f5e9;
+        --accent: #00bfa6;
+        --particle1: #00bcd4;
+        --particle2: #8bc34a;
+    }
+
+    [data-theme="cyber-purple"] {
+        --bg1: #1a0033;
+        --bg2: #4a0066;
+        --accent: #d600ff;
+        --particle1: #ff00c8;
+        --particle2: #6f00ff;
+        --fg: #ffffff;
+        --bg-panel: rgba(40, 0, 60, 0.8);
+        --bg-card: rgba(50, 0, 70, 0.9);
+    }
+
+    [data-theme="ocean-blue"] {
+        --bg1: #001a33;
+        --bg2: #004466;
+        --accent: #00bcd4;
+        --particle1: #00e6ff;
+        --particle2: #0077ff;
+        --fg: #ffffff;
+        --bg-panel: rgba(0, 30, 60, 0.8);
+        --bg-card: rgba(0, 40, 80, 0.9);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'SF Pro Display', system-ui, sans-serif;
+        overflow: hidden;
+        color: var(--fg);
+    }
+
+    body {
+        background: linear-gradient(160deg, var(--bg1), var(--bg2));
+        transition: background 1s ease, color 0.5s ease;
+    }
+
+    .app {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 24px;
+        min-height: 100vh;
+        padding: 24px;
+    }
+
+    .canvas-wrap {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow:
+            0 20px 40px var(--shadow),
+            0 0 0 1px var(--border);
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+    }
+
+    canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    .panel {
+        background: var(--bg-panel);
+        backdrop-filter: blur(30px) saturate(180%);
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow:
+            0 20px 40px var(--shadow),
+            0 0 0 1px var(--border);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        color: var(--fg);
+        opacity: 0;
+        transform: translateX(40px);
+        animation: slideIn 0.8s ease forwards 0.4s;
+
+        height: 90vh;
+        /* фиксированная высота панели */
+        overflow-y: auto;
+        /* если контента больше — появляется скролл */
+    }
+
+    /* обёртка для панели */
+    .panel-wrapper {
+        border-radius: 24px;
+        /* скругление как у панели */
+        overflow: hidden;
+        /* обрезает скролл, чтобы он не вылезал */
+        height: 90vh;
+        /* фиксированная высота панели */
+    }
+
+    .panel {
+        height: 100%;
+        overflow-y: auto;
+        /* прокрутка внутри обёртки */
+        padding: 24px;
+    }
+
+    /* скроллбар */
+    .panel::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .panel::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .panel::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.062);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.011);
+    }
+
+    .panel::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+
+
+    @keyframes slideIn {
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    h2 {
+        margin: 0 0 20px;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        color: var(--accent);
+    }
+
+    .section {
+        margin-bottom: 24px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        color: var(--fg);
+        opacity: 0.9;
+    }
+
+    label {
+        display: block;
+        font-size: 14px;
+        margin: 0 0 8px;
+        font-weight: 500;
+        color: var(--fg);
+        opacity: 0.8;
+    }
+
+    .input-group {
+        margin-bottom: 16px;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--fg);
+        font-size: 16px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.1);
+    }
+
+    textarea {
+        resize: none;
+        height: 80px;
+    }
+
+    .slider-container {
+        position: relative;
+        margin: 8px 0 16px;
+    }
+
+    input[type="range"] {
+        width: 100%;
+        height: 5px;
+        border-radius: 5px;
+        background: var(--border);
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--accent);
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .slider-value {
+        position: absolute;
+        right: 0;
+        top: -20px;
+        font-size: 12px;
+        color: var(--fg);
+        opacity: 0.7;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        border-radius: 12px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--fg);
+    }
+
+    .row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .stats {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--fg);
+        opacity: 0.6;
+        margin-top: 8px;
+    }
+
+    .muted {
+        font-size: 13px;
+        color: var(--fg);
+        opacity: 0.5;
+    }
+
+    footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: var(--fg);
+        opacity: 0.4;
+        text-align: center;
+    }
+
+    .emoji-preview {
+        font-size: 20px;
+        margin-top: 8px;
+    }
+
+    @media (max-width: 1000px) {
+        .app {
+            grid-template-columns: 1fr;
+            padding: 16px;
+        }
+
+        .panel {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            left: 16px;
+            width: auto;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+    }
+
+    /* Стили для полноэкранного режима */
+    #stage-wrap {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+        height: 100%;
+    }
+
+    /* по умолчанию stage занимает свою область */
+    #stage {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 300px;
+    }
+
+    /* панель настроек */
+    #controls {
+        width: 320px;
+        /* пример */
+        max-width: 40%;
+        box-sizing: border-box;
+        padding: 12px;
+        background: rgba(0, 0, 0, 0.35);
+        color: #fff;
+        overflow: auto;
+    }
+
+
+
+
+    /* Когда body помечен как fullscreen, растягиваем stage на весь экран
+   и прячем панель настроек (и кнопку можно оставить для выхода) */
+    body[data-fullscreen="true"] #stage {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: 9998;
+    }
+
+    body[data-fullscreen="true"] #c {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+
+    body[data-fullscreen="true"] #controls {
+        display: none !important;
+    }
+
+    /* Если нужно — скрывать другие элементы (header/footer) при fullscreen */
+    body[data-fullscreen="true"] .hide-on-fullscreen {
+        display: none !important;
+    }
+    
+    /* кнопка полноэкрана */
+.fullscreen-btn {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 60;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.fullscreen-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.fullscreen-btn:active {
+  transform: scale(0.95);
+}
+
+body[data-theme="aurora-light"] .fullscreen-btn {
+  color: #000;
+}
+
+.canvas-wrap {
+    border-radius: 12px; /* обычные скругления */
+    overflow: hidden;    /* чтобы частицы не вылезали */
+    transition: border-radius 0.2s;
+}
+
+.canvas-wrap.fullscreen {
+    border-radius: 0;   /* убираем скругления в fullscreen */
+}
+

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Texticles</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body data-theme="neon-dark">
+  <div class="app">
+    <!-- canvas-wrap / stage: оставляем id="stage" — именно его использует script.js -->
+    <div class="canvas-wrap" id="stage" style="max-height:90vh; position: relative;">
+      <canvas id="c"></canvas>
+
+      <!-- Кнопка полноэкранного режима (видна поверх canvas) -->
+      <button id="fullscreenBtn" class="fullscreen-btn" title="Во весь экран (F)" aria-label="Во весь экран"
+        style="position: absolute; right: 12px; top: 12px; z-index: 60; color: #fff; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer;">⤢</button>
+    </div>
+
+    <!-- Панель управления: добавил класс hide-on-fullscreen, чтобы можно было скрывать её при полном экране -->
+    <div class="panel-wrapper hide-on-fullscreen">
+      <div class="panel">
+        <h2>✨ Texticles</h2>
+
+        <div class="section">
+          <div class="section-title">Текст</div>
+          <div class="input-group">
+            <label>Введите текст или эмодзи</label>
+            <textarea id="txt">Texticles</textarea>
+            <div class="emoji-preview" id="emojiPreview"></div>
+          </div>
+
+          <div class="row">
+            <button class="btn" id="apply">
+              <span>Применить</span>
+            </button>
+            <button class="btn btn-outline" id="shuffle">
+              <span>Разбросать</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Внешний вид</div>
+
+          <div class="input-group">
+            <label>Плотность частиц</label>
+            <div class="slider-container">
+              <input id="density" type="range" min="1" max="10" step="1" value="4" />
+              <div class="slider-value" id="densityValue">4</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Размер частиц</label>
+            <div class="slider-container">
+              <input id="size" type="range" min="1" max="8" step="0.5" value="2.5" />
+              <div class="slider-value" id="sizeValue">2.5</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Скорость анимации</label>
+            <div class="slider-container">
+              <input id="speed" type="range" min="0.05" max="1" step="0.05" value="0.3" />
+              <div class="slider-value" id="speedValue">0.3</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Взаимодействие</div>
+
+          <div class="input-group">
+            <label>Реакция на курсор</label>
+            <select id="mouseMode">
+              <option value="repel">Отталкивать ✨</option>
+              <option value="attract">Притягивать 🎯</option>
+              <option value="swirl">Вихрь 🌪️</option>
+              <option value="none">Выключено</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Сила взаимодействия</label>
+            <div class="slider-container">
+              <input id="interactionStrength" type="range" min="0.1" max="5" step="0.1" value="2" />
+              <div class="slider-value" id="interactionValue">2</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Оформление</div>
+
+          <div class="input-group">
+            <label>Цветовой режим</label>
+            <select id="colorMode">
+              <option value="emoji">Цвет эмодзи 🎨</option>
+              <option value="monochrome">Монохром ⚫️⚪️</option>
+              <option value="gradient">Градиент 🌈</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Тема оформления</label>
+            <select id="themeSelect">
+              <option value="neon-dark">Neon Dark 🌙</option>
+              <option value="aurora-light">Aurora Light ☀️</option>
+              <option value="cyber-purple">Cyber Purple 💜</option>
+              <option value="ocean-blue">Ocean Blue 🌊</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="stats">
+          <span id="particleCount">Частиц: 0</span>
+          <span id="fps">FPS: 60</span>
+        </div>
+
+        <footer>Перетаскивайте частицы! • Поддерживает эмодзи • Адаптивный дизайн</footer>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
