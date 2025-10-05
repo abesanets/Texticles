@@ -555,7 +555,7 @@
         /* расстояние между кнопками */
         margin-top: 8px;
     }
-    
+
     .preset-btn {
         padding: 12px 12px;
         border-radius: 12px;
@@ -585,4 +585,104 @@
         font-size: 14px;
         color: #aaaaaaad;
         font-style: italic;
+    }
+
+
+    /* Стили для заглушки */
+    #mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #eb9636 0%, #c49537 100%);
+        z-index: 9999;
+        font-family: Arial, sans-serif;
+        color: white;
+        text-align: center;
+    }
+
+    .overlay-content {
+        position: absolute;
+        max-width: 90%;
+    }
+
+    .logo {
+        font-size: 2.5em;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .message {
+        font-size: 1.2em;
+        line-height: 1.5;
+        margin-bottom: 30px;
+    }
+
+    .contact {
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+
+    /* Показываем заглушку только на устройствах без точного курсора (мыши) */
+    @media (pointer: coarse) {
+        #mobile-overlay {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Дополнительная страховка - скрываем скролл */
+        body {
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 40px;
+        }
+
+        .message {
+            font-size: 20px;
+            font-weight: 700;
+        }
+    }
+
+    /* Дополнительная проверка для очень больших сенсорных устройств */
+    @media (pointer: coarse) and (min-width: 1200px) {
+
+        /* Можно добавить дополнительные стили для больших планшетов */
+        .overlay-content {
+            max-width: 600px;
+        }
+
+        .logo {
+            font-size: 30px;
+        }
+
+        .message {
+            font-size: 15px;
+            font-weight: 700;
+        }
+    }
+
+    /* Для очень маленьких экранов */
+    @media (pointer: coarse) and (max-width: 480px) {
+        .logo {
+            font-size: 30px;
+        }
+
+        .message {
+            font-size: 15px;
+            font-weight: 700;
+        }
+    }
+
+    /* Гарантируем, что на устройствах с мышью заглушка скрыта */
+    @media (pointer: fine) {
+        #mobile-overlay {
+            display: none !important;
+        }
     }
