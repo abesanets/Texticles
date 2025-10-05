@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Texticles</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 
 <body data-theme="black-baby">
@@ -23,8 +24,6 @@
       <div id="custom-cursor"></div>
     </div>
 
-
-    <!-- Панель управления: добавил класс hide-on-fullscreen, чтобы можно было скрывать её при полном экране -->
     <div class="panel-wrapper hide-on-fullscreen">
       <div class="panel">
         <h2>✨ Texticles</h2>
@@ -32,10 +31,11 @@
         <div class="section">
           <div class="section-title">Текст</div>
           <div class="input-group">
-            <label>Введите текст или эмодзи</label>
-            <textarea id="txt">Texticles</textarea>
+            <label for="txt">Введите текст или эмодзи</label>
+            <textarea id="txt" placeholder="Чтобы ввести эмодзи нажмите Win+. или введите текст">Texticles</textarea>
             <div class="emoji-preview" id="emojiPreview"></div>
           </div>
+
 
           <div class="row">
             <button class="btn" id="apply">
@@ -50,17 +50,22 @@
         <div class="section">
           <div class="section-title">Внешний вид</div>
           <div class="input-group">
-            <label>Реакция на курсор</label>
+            <label for="mouseMode">Реакция на курсор</label>
             <select id="mouseMode">
               <option value="repel">Отталкивать ✨</option>
               <option value="attract">Притягивать 🎯</option>
               <option value="swirl">Вихрь 🌪️</option>
+              <option value="pulse">Пульсация 💓</option>
+              <option value="gravity">Гравитация ⚫</option>
+              <option value="neural">Нейросеть 🧠</option>
+              <option value="symmetry">Симметрия 🔄</option>
+              <option value="chaos">Хаос 🔥</option>
               <option value="none">Выключено</option>
             </select>
           </div>
 
           <div class="input-group">
-            <label>Цветовой режим</label>
+            <label for="colorMode">Цветовой режим</label>
             <select id="colorMode">
               <option value="emoji">Цвет эмодзи 🎨</option>
               <option value="monochrome">Монохром ⚫️⚪️</option>
@@ -72,39 +77,67 @@
         <div class="section">
           <div class="section-title">Пресеты</div>
           <div class="preset-buttons">
-            <button class="preset-btn" data-density="2" data-size="6" data-speed="0.12" data-interaction="0.6">🧃 Ультра
-              Смузи</button>
-            <button class="preset-btn" data-density="3" data-size="5" data-speed="0.18" data-interaction="0.9">🧵
-              Шёлковый Драйв</button>
-            <button class="preset-btn" data-density="4" data-size="3" data-speed="0.35" data-interaction="1.4">🌈
-              Спокойный Вайб</button>
-            <button class="preset-btn" data-density="6" data-size="2.2" data-speed="0.65" data-interaction="2.2">⚡
-              Зарядон</button>
-            <button class="preset-btn" data-density="8" data-size="1.6" data-speed="0.9" data-interaction="3">🔥
-              Турбо-Шторм</button>
-            <button class="preset-btn" data-density="10" data-size="4" data-speed="1" data-interaction="5">💥 Хаос
-              Мод</button>
-            <button class="preset-btn" data-density="1.5" data-size="7" data-speed="0.08" data-interaction="0.4">🧘 Зен
-              Режим</button>
-            <button class="preset-btn" data-density="2.5" data-size="4.5" data-speed="0.28" data-interaction="1">🌊
-              Волнорез</button>
-            <button class="preset-btn" data-density="5.5" data-size="2.8" data-speed="0.5" data-interaction="1.8">🔮
-              Космо-гуляш</button>
-            <button class="preset-btn" data-density="7" data-size="2" data-speed="0.8" data-interaction="2.8">🚀
-              Ракетный Пульс</button>
-            <button class="preset-btn" data-density="3" data-size="1.4" data-speed="0.45" data-interaction="0.9">🌃
-              Ночной Неон</button>
-            <button class="preset-btn" data-density="4" data-size="5.5" data-speed="0.2" data-interaction="0.7">🍂
-              Осенний Флоу</button>
+            <button class="preset-btn" data-density="2" data-size="1.5" data-speed="0.1" data-interaction="0.5">⚡
+              Производительный</button>
+
+            <button class="preset-btn" data-density="10" data-size="8" data-speed="0.2" data-interaction="10">💥
+              Взрыв</button>
+
+            <button class="preset-btn" data-density="7" data-size="5" data-speed="0.05" data-interaction="8">🌌
+              Космос</button>
+
+            <button class="preset-btn" data-density="9" data-size="2" data-speed="8" data-interaction="3">🌀
+              Вихрь</button>
+
+            <button class="preset-btn" data-density="3" data-size="7" data-speed="0.3" data-interaction="6">🎯
+              Точность</button>
+
+            <button class="preset-btn" data-density="8" data-size="4" data-speed="5" data-interaction="9">❤️
+              Пульс</button>
+
+            <button class="preset-btn" data-density="1" data-size="10" data-speed="0.8" data-interaction="1">👁️
+              Гиганты</button>
+
+            <button class="preset-btn" data-density="6" data-size="3" data-speed="10" data-interaction="7">⚡
+              Молния</button>
+
+            <button class="preset-btn" data-density="10" data-size="1" data-speed="0.5" data-interaction="4">🌧️
+              Дождь</button>
+
+            <button class="preset-btn" data-density="5" data-size="6" data-speed="2" data-interaction="10">🧲
+              Магнит</button>
+
+            <button class="preset-btn" data-density="4" data-size="4" data-speed="1" data-interaction="5">🎪
+              Карнавал</button>
+
+            <button class="preset-btn" data-density="2" data-size="2" data-speed="0.2" data-interaction="2">🖥️
+              Ультра</button>
+
+            <button class="preset-btn" data-density="10" data-size="10" data-speed="0.1" data-interaction="10">💀
+              Апокалипсис</button>
+
+            <button class="preset-btn" data-density="7" data-size="2.5" data-speed="3" data-interaction="8">🎆
+              Фейерверк</button>
+
+            <button class="preset-btn" data-density="3" data-size="3" data-speed="0.5" data-interaction="3">🌊
+              Океан</button>
+
+            <button class="preset-btn" data-density="8" data-size="1.5" data-speed="6" data-interaction="6">🔬
+              Наука</button>
+
+            <button class="preset-btn" data-density="5" data-size="5" data-speed="0.7" data-interaction="4">✨
+              Магия</button>
+
+            <button class="preset-btn" data-density="9" data-size="3.5" data-speed="4" data-interaction="9">🌪️
+              Торнадо</button>
           </div>
         </div>
-
 
         <div class="section">
           <div class="section-title">Настройки</div>
 
           <div class="input-group">
-            <label>Плотность частиц</label>
+            <label for="density">Плотность частиц</label>
             <div class="slider-container">
               <input id="density" type="range" min="1" max="10" step="1" value="4" />
               <div class="slider-value" id="densityValue">4</div>
@@ -112,25 +145,25 @@
           </div>
 
           <div class="input-group">
-            <label>Размер частиц</label>
+            <label for="size">Размер частиц</label>
             <div class="slider-container">
-              <input id="size" type="range" min="1" max="8" step="0.5" value="2.5" />
+              <input id="size" type="range" min="1" max="10" step="0.5" value="2.5" />
               <div class="slider-value" id="sizeValue">2.5</div>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Скорость анимации</label>
+            <label for="speed">Скорость анимации</label>
             <div class="slider-container">
-              <input id="speed" type="range" min="0.05" max="1" step="0.05" value="0.3" />
+              <input id="speed" type="range" min="0.1" max="10" step="0.1" value="0.3" />
               <div class="slider-value" id="speedValue">0.3</div>
             </div>
           </div>
 
           <div class="input-group">
-            <label>Сила взаимодействия</label>
+            <label for="interaction">Сила взаимодействия</label>
             <div class="slider-container">
-              <input id="interaction" type="range" min="0.1" max="5" step="0.1" value="2" />
+              <input id="interaction" type="range" min="0.5" max="10" step="0.5" value="2" />
               <div class="slider-value" id="interactionValue">2</div>
             </div>
           </div>
@@ -140,7 +173,7 @@
           <div class="section-title">Отображение</div>
 
           <div class="input-group toggle-group">
-            <label>Показать FPS</label>
+            <label for="showFps">Показать FPS</label>
             <label class="toggle">
               <input id="showFps" type="checkbox">
               <span class="toggle-slider"></span>
@@ -148,7 +181,7 @@
           </div>
 
           <div class="input-group toggle-group">
-            <label>Показать счетчик частиц</label>
+            <label for="showParticleCount">Показать счетчик частиц</label>
             <label class="toggle">
               <input id="showParticleCount" type="checkbox">
               <span class="toggle-slider"></span>
@@ -156,7 +189,7 @@
           </div>
 
           <div class="input-group">
-            <label>Тема оформления</label>
+            <label for="themeSelect">Тема оформления</label>
             <select id="themeSelect">
               <option value="black-baby">Dark King 🖤</option>
               <option value="neon-dark">Neon Dark 🌙</option>
@@ -171,7 +204,7 @@
           <span id="fps">FPS: 60</span>
         </div>
 
-        <footer>Перетаскивайте частицы! • Поддерживает эмодзи • Адаптивный дизайн</footer>
+        <footer>Перетаскивайте частицы! • Поддерживает эмодзи<br>© Все права защищены Texticles 2025</footer>
       </div>
     </div>
   </div>

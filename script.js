@@ -1,7 +1,7 @@
 (() => {
     // ========== КОНФИГУРАЦИЯ И ИНИЦИАЛИЗАЦИЯ ==========
     const CONFIG = {
-        MAX_PARTICLES: 15000,
+        MAX_PARTICLES: 25000,
         DPR_LIMIT: 1.5,
         MOUSE_RADIUS: 150,
         RESIZE_DELAY: 100,
@@ -42,10 +42,15 @@
     };
 
     const ctx = elements.canvas.getContext('2d', { alpha: true });
+
     const offscreen = {
         canvas: document.createElement('canvas'),
-        get ctx() { return this.canvas.getContext('2d'); }
+        ctx: null
     };
+
+    // Создаём контекст один раз с willReadFrequently
+    offscreen.ctx = offscreen.canvas.getContext('2d', { willReadFrequently: true });
+
 
     // ========== СОСТОЯНИЕ ПРИЛОЖЕНИЯ ==========
     let state = {
@@ -401,6 +406,57 @@
                     p.vy += Math.sin(angle + Math.PI / 2) * force * 0.7;
                     p.vx -= mdx * 0.0005 * push;
                     p.vy -= mdy * 0.0005 * push;
+                    break;
+                case 'pulse':
+                    const pulseWave = Math.sin(Date.now() * 0.01) * 0.5 + 0.5;
+                    const pulseForce = force * (0.5 + pulseWave);
+                    p.vx += (mdx / (mdist + 0.01)) * pulseForce;
+                    p.vy += (mdy / (mdist + 0.01)) * pulseForce;
+                    p.energy = Math.min(1, p.energy + push * 0.1);
+                    break;
+                case 'gravity':
+                    const gravityForce = force * 2.5;
+                    const acceleration = gravityForce / (mdist * 0.1 + 0.1);
+                    p.vx -= (mdx / (mdist + 0.01)) * acceleration;
+                    p.vy -= (mdy / (mdist + 0.01)) * acceleration;
+                    p.size = Math.max(0.5, p.baseSize * (mdist / CONFIG.MOUSE_RADIUS));
+                    break;
+
+                // НОВЫЕ РЕЖИМЫ:
+                case 'neural':
+                    // Частицы образуют нейронные связи между собой
+                    p.neural = true;
+                    p.neuralConnections = [];
+                    p.vx += (Math.sin(mdist * 0.1 + Date.now() * 0.002) - 0.5) * force * 0.5;
+                    p.vy += (Math.cos(mdist * 0.1 + Date.now() * 0.002) - 0.5) * force * 0.5;
+                    p.color = `hsl(${(mdist * 2) % 360}, 80%, 60%)`;
+                    break;
+                case 'symmetry':
+                    // Симметричное отражение частиц
+                    const mirrorX = 2 * mouseX - p.x;
+                    const mirrorY = 2 * mouseY - p.y;
+                    const mirrorDist = Math.sqrt(Math.pow(mirrorX - mouseX, 2) + Math.pow(mirrorY - mouseY, 2));
+
+                    if (mirrorDist < CONFIG.MOUSE_RADIUS) {
+                        p.vx += (mirrorX - p.x) * 0.02 * force;
+                        p.vy += (mirrorY - p.y) * 0.02 * force;
+                    }
+                    p.symmetry = true;
+                    break;
+
+                case 'chaos':
+                    // Хаотичное поведение с фрактальными паттернами
+                    const chaos1 = Math.sin(p.x * 0.01 + Date.now() * 0.001);
+                    const chaos2 = Math.cos(p.y * 0.01 + Date.now() * 0.001);
+                    const chaos3 = Math.sin((p.x + p.y) * 0.005 + Date.now() * 0.002);
+
+                    p.vx += (chaos1 - 0.5) * force * 2;
+                    p.vy += (chaos2 - 0.5) * force * 2;
+                    p.vx += Math.cos(chaos3 * Math.PI * 2) * force;
+                    p.vy += Math.sin(chaos3 * Math.PI * 2) * force;
+
+                    p.color = `hsl(${(chaos1 * 60 + chaos2 * 60 + chaos3 * 60) % 360}, 80%, 60%)`;
+                    p.chaos = true;
                     break;
             }
         }

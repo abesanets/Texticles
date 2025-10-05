@@ -555,9 +555,7 @@
         /* расстояние между кнопками */
         margin-top: 8px;
     }
-
-    /* Твой стиль кнопок остаётся как есть, просто убери margin-left и margin-bottom, 
-   потому что теперь у нас за отступы отвечает gap */
+    
     .preset-btn {
         padding: 12px 12px;
         border-radius: 12px;
@@ -581,4 +579,10 @@
 
     .preset-btn:active {
         transform: translateY(0);
+    }
+
+    textarea::placeholder {
+        font-size: 14px;
+        color: #aaaaaaad;
+        font-style: italic;
     }
