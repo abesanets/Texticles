@@ -18,34 +18,31 @@
         --bg-card: rgba(40, 40, 50, 0.9);
     }
 
-    [data-theme="aurora-light"] {
-        --bg1: #f0faff;
-        --bg2: #d6f5e9;
-        --accent: #00bfa6;
-        --particle1: #00bcd4;
-        --particle2: #8bc34a;
+    [data-theme="black-baby"] {
+        --bg1: #2c2c2c;
+        --bg2: #4a4a4a;
+        --accent: #ffbb00;
+        --fg: #ffffff;
+        --bg-panel: #2b2b2b;
+        --bg-card: #1414146b;
     }
 
-    [data-theme="cyber-purple"] {
-        --bg1: #1a0033;
-        --bg2: #4a0066;
-        --accent: #d600ff;
-        --particle1: #ff00c8;
-        --particle2: #6f00ff;
+    [data-theme="orange"] {
+        --bg1: #f75403;
+        --bg2: #f37b0c;
+        --accent: #d1cc43;
         --fg: #ffffff;
-        --bg-panel: rgba(40, 0, 60, 0.8);
-        --bg-card: rgba(50, 0, 70, 0.9);
+        --bg-panel: #acacac7e;
+        --bg-card: #acacac54;
     }
 
-    [data-theme="ocean-blue"] {
-        --bg1: #001a33;
-        --bg2: #004466;
-        --accent: #00bcd4;
-        --particle1: #00e6ff;
-        --particle2: #0077ff;
-        --fg: #ffffff;
-        --bg-panel: rgba(0, 30, 60, 0.8);
-        --bg-card: rgba(0, 40, 80, 0.9);
+    [data-theme="eye-killer"] {
+        --bg1: #e0e0e0;
+        --bg2: #bdbdbd;
+        --accent: #f9d72b;
+        --fg: #474747;
+        --bg-panel: #e1e1e1cf;
+        --bg-card: #d6d6d6;
     }
 
     * {
@@ -395,137 +392,193 @@
     body[data-fullscreen="true"] .hide-on-fullscreen {
         display: none !important;
     }
-    
+
     /* кнопка полноэкрана */
-.fullscreen-btn {
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  z-index: 60;
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 22px;
-  cursor: pointer;
-  opacity: 0.7;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
+    .fullscreen-btn {
+        position: absolute;
+        right: 12px;
+        top: 12px;
+        z-index: 60;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+    }
 
-.fullscreen-btn:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
+    .fullscreen-btn:hover {
+        opacity: 1;
+        transform: scale(1.1);
+    }
 
-.fullscreen-btn:active {
-  transform: scale(0.95);
-}
+    .fullscreen-btn:active {
+        transform: scale(0.95);
+    }
 
-body[data-theme="aurora-light"] .fullscreen-btn {
-  color: #000;
-}
+    body[data-theme="aurora-light"] .fullscreen-btn {
+        color: #000;
+    }
 
-.canvas-wrap {
-    border-radius: 12px; /* обычные скругления */
-    overflow: hidden;    /* чтобы частицы не вылезали */
-    transition: border-radius 0.2s;
-}
+    .canvas-wrap {
+        border-radius: 12px;
+        /* обычные скругления */
+        overflow: hidden;
+        /* чтобы частицы не вылезали */
+        transition: border-radius 0.2s;
+    }
 
-.canvas-wrap.fullscreen {
-    border-radius: 0;   /* убираем скругления в fullscreen */
-}
+    .canvas-wrap.fullscreen {
+        border-radius: 0;
+        /* убираем скругления в fullscreen */
+    }
 
-/* ========== OVERLAY СТИЛИ ========== */
-.overlay {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 50;
-  color: white;
-  font-family: system-ui;
-  font-size: 16px;
-  pointer-events: none;
-  background: none;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-}
+    /* ========== OVERLAY СТИЛИ ========== */
+    .overlay {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        z-index: 50;
+        color: white;
+        font-family: system-ui;
+        font-size: 16px;
+        pointer-events: none;
+        background: none;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    }
 
-.overlay.hidden {
-  display: none;
-}
+    .overlay.hidden {
+        display: none;
+    }
 
-#fpsOverlay {
-  top: 12px;
-}
+    #fpsOverlay {
+        top: 12px;
+    }
 
-#particleCountOverlay {
-  top: 32px;
-}
+    #particleCountOverlay {
+        top: 32px;
+    }
 
-/* Для светлой темы */
-body[data-theme="aurora-light"] .overlay {
-  color: #000000;
-  text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
-}
+    /* Для светлой темы */
+    body[data-theme="aurora-light"] .overlay {
+        color: #000000;
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    }
 
-/* ========== ПЕРЕКЛЮЧАТЕЛИ ========== */
-.toggle-group {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-}
+    /* ========== ПЕРЕКЛЮЧАТЕЛИ ========== */
+    .toggle-group {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
 
-.toggle {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
+    .toggle {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+    }
 
-.toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+    .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
 
-.toggle-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--border);
-  transition: .3s;
-  border-radius: 34px;
-}
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--border);
+        transition: .3s;
+        border-radius: 34px;
+    }
 
-.toggle-slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .3s;
-  border-radius: 50%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 4px;
+        bottom: 4px;
+        background-color: white;
+        transition: .3s;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
 
-.toggle input:checked + .toggle-slider {
-  background-color: var(--accent);
-}
+    .toggle input:checked+.toggle-slider {
+        background-color: var(--accent);
+    }
 
-.toggle input:checked + .toggle-slider:before {
-  transform: translateX(24px);
-}
+    .toggle input:checked+.toggle-slider:before {
+        transform: translateX(24px);
+    }
 
-.toggle input:focus + .toggle-slider {
-  box-shadow: 0 0 1px var(--accent);
-}
+    .toggle input:focus+.toggle-slider {
+        box-shadow: 0 0 1px var(--accent);
+    }
 
-/* Для светлой темы - темный фон выключенного состояния */
-body[data-theme="aurora-light"] .toggle-slider {
-  background-color: rgba(0, 0, 0, 0.1);
-}
+    /* Для светлой темы - темный фон выключенного состояния */
+    body[data-theme="aurora-light"] .toggle-slider {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
 
+    /* Прозрачный курсор */
+    #custom-cursor {
+        width: 10px;
+        height: 10px;
+        background-color: rgba(190, 190, 190, 0.2);
+        /* 10% видимости */
+        border-radius: 50%;
+        position: absolute;
+        pointer-events: none;
+        /* курсор не мешает кликам */
+        transform: translate(-50%, -50%);
+        display: none;
+        transition: background-color 0.2s, transform 0.1s;
+        /* плавное движение */
+        z-index: 100;
+        /* выше всех overlay и кнопок */
+    }
+
+    .preset-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        /* <-- разрешаем перенос строк */
+        gap: 10px;
+        /* расстояние между кнопками */
+        margin-top: 8px;
+    }
+
+    /* Твой стиль кнопок остаётся как есть, просто убери margin-left и margin-bottom, 
+   потому что теперь у нас за отступы отвечает gap */
+    .preset-btn {
+        padding: 12px 12px;
+        border-radius: 12px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        font-family: inherit;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .preset-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .preset-btn:active {
+        transform: translateY(0);
+    }

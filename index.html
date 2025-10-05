@@ -8,19 +8,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body data-theme="neon-dark">
+<body data-theme="black-baby">
   <div class="app">
     <div class="canvas-wrap" id="stage" style="max-height:90vh; position: relative;">
       <canvas id="c"></canvas>
 
-      <!-- Overlay элементы ДОЛЖНЫ быть здесь -->
       <div id="fpsOverlay" class="overlay hidden">FPS: 60</div>
       <div id="particleCountOverlay" class="overlay hidden">Частиц: 0</div>
 
-      <!-- Кнопка полноэкранного режима -->
       <button id="fullscreenBtn" class="fullscreen-btn" title="Во весь экран (F)" aria-label="Во весь экран"
         style="position: absolute; right: 12px; top: 12px; z-index: 60; color: #fff; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer;">⤢</button>
+
+      <!-- Кастомный курсор -->
+      <div id="custom-cursor"></div>
     </div>
+
 
     <!-- Панель управления: добавил класс hide-on-fullscreen, чтобы можно было скрывать её при полном экране -->
     <div class="panel-wrapper hide-on-fullscreen">
@@ -47,6 +49,59 @@
 
         <div class="section">
           <div class="section-title">Внешний вид</div>
+          <div class="input-group">
+            <label>Реакция на курсор</label>
+            <select id="mouseMode">
+              <option value="repel">Отталкивать ✨</option>
+              <option value="attract">Притягивать 🎯</option>
+              <option value="swirl">Вихрь 🌪️</option>
+              <option value="none">Выключено</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Цветовой режим</label>
+            <select id="colorMode">
+              <option value="emoji">Цвет эмодзи 🎨</option>
+              <option value="monochrome">Монохром ⚫️⚪️</option>
+              <option value="gradient">Градиент 🌈</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Пресеты</div>
+          <div class="preset-buttons">
+            <button class="preset-btn" data-density="2" data-size="6" data-speed="0.12" data-interaction="0.6">🧃 Ультра
+              Смузи</button>
+            <button class="preset-btn" data-density="3" data-size="5" data-speed="0.18" data-interaction="0.9">🧵
+              Шёлковый Драйв</button>
+            <button class="preset-btn" data-density="4" data-size="3" data-speed="0.35" data-interaction="1.4">🌈
+              Спокойный Вайб</button>
+            <button class="preset-btn" data-density="6" data-size="2.2" data-speed="0.65" data-interaction="2.2">⚡
+              Зарядон</button>
+            <button class="preset-btn" data-density="8" data-size="1.6" data-speed="0.9" data-interaction="3">🔥
+              Турбо-Шторм</button>
+            <button class="preset-btn" data-density="10" data-size="4" data-speed="1" data-interaction="5">💥 Хаос
+              Мод</button>
+            <button class="preset-btn" data-density="1.5" data-size="7" data-speed="0.08" data-interaction="0.4">🧘 Зен
+              Режим</button>
+            <button class="preset-btn" data-density="2.5" data-size="4.5" data-speed="0.28" data-interaction="1">🌊
+              Волнорез</button>
+            <button class="preset-btn" data-density="5.5" data-size="2.8" data-speed="0.5" data-interaction="1.8">🔮
+              Космо-гуляш</button>
+            <button class="preset-btn" data-density="7" data-size="2" data-speed="0.8" data-interaction="2.8">🚀
+              Ракетный Пульс</button>
+            <button class="preset-btn" data-density="3" data-size="1.4" data-speed="0.45" data-interaction="0.9">🌃
+              Ночной Неон</button>
+            <button class="preset-btn" data-density="4" data-size="5.5" data-speed="0.2" data-interaction="0.7">🍂
+              Осенний Флоу</button>
+          </div>
+        </div>
+
+
+        <div class="section">
+          <div class="section-title">Настройки</div>
 
           <div class="input-group">
             <label>Плотность частиц</label>
@@ -71,50 +126,13 @@
               <div class="slider-value" id="speedValue">0.3</div>
             </div>
           </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Взаимодействие</div>
-
-          <div class="input-group">
-            <label>Реакция на курсор</label>
-            <select id="mouseMode">
-              <option value="repel">Отталкивать ✨</option>
-              <option value="attract">Притягивать 🎯</option>
-              <option value="swirl">Вихрь 🌪️</option>
-              <option value="none">Выключено</option>
-            </select>
-          </div>
 
           <div class="input-group">
             <label>Сила взаимодействия</label>
             <div class="slider-container">
-              <input id="interactionStrength" type="range" min="0.1" max="5" step="0.1" value="2" />
+              <input id="interaction" type="range" min="0.1" max="5" step="0.1" value="2" />
               <div class="slider-value" id="interactionValue">2</div>
             </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">Оформление</div>
-
-          <div class="input-group">
-            <label>Цветовой режим</label>
-            <select id="colorMode">
-              <option value="emoji">Цвет эмодзи 🎨</option>
-              <option value="monochrome">Монохром ⚫️⚪️</option>
-              <option value="gradient">Градиент 🌈</option>
-            </select>
-          </div>
-
-          <div class="input-group">
-            <label>Тема оформления</label>
-            <select id="themeSelect">
-              <option value="neon-dark">Neon Dark 🌙</option>
-              <option value="aurora-light">Aurora Light ☀️</option>
-              <option value="cyber-purple">Cyber Purple 💜</option>
-              <option value="ocean-blue">Ocean Blue 🌊</option>
-            </select>
           </div>
         </div>
 
@@ -135,6 +153,16 @@
               <input id="showParticleCount" type="checkbox">
               <span class="toggle-slider"></span>
             </label>
+          </div>
+
+          <div class="input-group">
+            <label>Тема оформления</label>
+            <select id="themeSelect">
+              <option value="black-baby">Dark King 🖤</option>
+              <option value="neon-dark">Neon Dark 🌙</option>
+              <option value="orange">Orange 🍊</option>
+              <option value="eye-killer">Ahh my eyes 👀</option>
+            </select>
           </div>
         </div>
 

@@ -24,7 +24,7 @@
         speed: document.getElementById('speed'),
         speedValue: document.getElementById('speedValue'),
         mouseMode: document.getElementById('mouseMode'),
-        interactionStrength: document.getElementById('interactionStrength'),
+        interaction: document.getElementById('interaction'),
         interactionValue: document.getElementById('interactionValue'),
         colorMode: document.getElementById('colorMode'),
         themeSelect: document.getElementById('themeSelect'),
@@ -123,7 +123,7 @@
     function initSliders() {
         const sliders = [
             elements.density, elements.size,
-            elements.speed, elements.interactionStrength
+            elements.speed, elements.interaction
         ];
 
         sliders.forEach(slider => {
@@ -137,7 +137,7 @@
         elements.densityValue.textContent = elements.density.value;
         elements.sizeValue.textContent = elements.size.value;
         elements.speedValue.textContent = elements.speed.value;
-        elements.interactionValue.textContent = elements.interactionStrength.value;
+        elements.interactionValue.textContent = elements.interaction.value;
     }
 
     // ========== УПРАВЛЕНИЕ ЭМОДЗИ ==========
@@ -237,7 +237,8 @@
         for (let y = 0; y < offscreen.canvas.height; y += gap) {
             for (let x = 0; x < offscreen.canvas.width; x += gap) {
                 const idx = (y * offscreen.canvas.width + x) * 4;
-                if (img[idx] > 150) {
+                const brightness = (img[idx] + img[idx + 1] + img[idx + 2]) / 3;
+                if (brightness > 50) {
                     points.push({
                         x: (x - offscreen.canvas.width / 2) + state.center.x,
                         y: (y - offscreen.canvas.height / 2) + state.center.y
@@ -350,7 +351,7 @@
     function updateParticles(dt) {
         const spd = parseFloat(elements.speed.value);
         const mMode = elements.mouseMode.value;
-        const interactionStr = parseFloat(elements.interactionStrength.value);
+        const interactionStr = parseFloat(elements.interaction.value);
         const mouseX = state.mouse.x, mouseY = state.mouse.y;
 
         for (let i = 0; i < state.particles.length; i++) {
@@ -570,6 +571,61 @@
             });
         }
     }
+
+    const stage = document.getElementById('stage');
+    const cursor = document.getElementById('custom-cursor');
+
+    stage.addEventListener('mouseenter', () => {
+        cursor.style.display = 'block';
+        stage.style.cursor = 'none'; // скрываем стандартный курсор
+    });
+
+    stage.addEventListener('mouseleave', () => {
+        cursor.style.display = 'none';
+        stage.style.cursor = 'default';
+    });
+
+    stage.addEventListener('mousemove', e => {
+        const rect = stage.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        cursor.style.left = x + 'px';
+        cursor.style.top = y + 'px';
+    });
+
+
+    // функция для имитации пользовательского ввода
+    function triggerInputEvent(slider) {
+        const event = new Event('input', { bubbles: true });
+        slider.dispatchEvent(event);
+    }
+
+    // все кнопки пресетов
+    const presetButtons = document.querySelectorAll('.preset-btn');
+
+    presetButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const density = elements.density;
+            const size = elements.size;
+            const speed = elements.speed;
+            const interaction = elements.interaction;
+
+            // выставляем значения из пресета
+            density.value = btn.dataset.density;
+            size.value = btn.dataset.size;
+            speed.value = btn.dataset.speed;
+            interaction.value = btn.dataset.interaction;
+
+            // имитация движения ползунка
+            triggerInputEvent(density);
+            triggerInputEvent(size);
+            triggerInputEvent(speed);
+            triggerInputEvent(interaction);
+        });
+    });
+
+
 
     // ========== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ==========
     function init() {
