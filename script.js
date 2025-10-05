@@ -32,7 +32,13 @@
         shuffle: document.getElementById('shuffle'),
         particleCount: document.getElementById('particleCount'),
         fps: document.getElementById('fps'),
-        emojiPreview: document.getElementById('emojiPreview')
+        emojiPreview: document.getElementById('emojiPreview'),
+        showFps: document.getElementById('showFps'),
+        showFpsValue: document.getElementById('showFpsValue'),
+        showParticleCount: document.getElementById('showParticleCount'),
+        showParticleCountValue: document.getElementById('showParticleCountValue'),
+        fpsOverlay: document.getElementById('fpsOverlay'),
+        particleCountOverlay: document.getElementById('particleCountOverlay')
     };
 
     const ctx = elements.canvas.getContext('2d', { alpha: true });
@@ -61,8 +67,8 @@
     // ========== FULLSCREEN ЛОГИКА ==========
     const FullscreenManager = {
         isActive() {
-            return !!(document.fullscreenElement || document.webkitFullscreenElement || 
-                     document.msFullscreenElement || state.isManualFullscreen);
+            return !!(document.fullscreenElement || document.webkitFullscreenElement ||
+                document.msFullscreenElement || state.isManualFullscreen);
         },
 
         enter() {
@@ -93,9 +99,9 @@
         },
 
         handleChange() {
-            const isActive = !!(document.fullscreenElement || document.webkitFullscreenElement || 
-                              document.msFullscreenElement);
-            
+            const isActive = !!(document.fullscreenElement || document.webkitFullscreenElement ||
+                document.msFullscreenElement);
+
             if (isActive) {
                 document.body.setAttribute('data-fullscreen', 'true');
                 state.isManualFullscreen = false;
@@ -103,7 +109,7 @@
                 document.body.removeAttribute('data-fullscreen');
                 state.isManualFullscreen = false;
             }
-            
+
             elements.wrap.classList.toggle('fullscreen', this.isActive());
             setTimeout(() => this.handleResize(), 60);
         },
@@ -116,13 +122,14 @@
     // ========== ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРОВ ==========
     function initSliders() {
         const sliders = [
-            elements.density, elements.size, 
+            elements.density, elements.size,
             elements.speed, elements.interactionStrength
         ];
 
         sliders.forEach(slider => {
             slider.addEventListener('input', updateSliderValues);
         });
+
         updateSliderValues();
     }
 
@@ -137,7 +144,7 @@
     function updateEmojiPreview() {
         const text = elements.txt.value;
         const emojis = text.match(/\p{Emoji}/gu) || [];
-        elements.emojiPreview.textContent = emojis.slice(0, 10).join(' ') + 
+        elements.emojiPreview.textContent = emojis.slice(0, 10).join(' ') +
             (emojis.length > 10 ? '...' : '');
     }
 
@@ -151,10 +158,10 @@
         elements.canvas.height = Math.max(1, Math.floor(state.H * state.DPR));
         elements.canvas.style.width = state.W + 'px';
         elements.canvas.style.height = state.H + 'px';
-        
+
         ctx.setTransform(state.DPR, 0, 0, state.DPR, 0, 0);
         state.center = { x: state.W / 2, y: state.H / 2 };
-        
+
         rebuildText();
     }
 
@@ -204,7 +211,7 @@
             for (let x = 0; x < offscreen.canvas.width; x++) {
                 const idx = (y * offscreen.canvas.width + x) * 4;
                 const a = imageData.data[idx + 3];
-                
+
                 if (a > 50) {
                     const colorKey = `${x},${y}`;
                     const r = imageData.data[idx], g = imageData.data[idx + 1], b = imageData.data[idx + 2];
@@ -244,7 +251,7 @@
 
     function calculateOptimalFontSize(lines) {
         return Math.min(
-            state.W / Math.max(...lines.map(l => l.length)) * 2, 
+            state.W / Math.max(...lines.map(l => l.length)) * 2,
             state.H / (lines.length * 0.7)
         );
     }
@@ -276,7 +283,7 @@
 
         const density = parseFloat(elements.density.value);
         const desiredCount = Math.min(
-            CONFIG.MAX_PARTICLES, 
+            CONFIG.MAX_PARTICLES,
             Math.max(100, Math.floor(state.targetPoints.length * density / 5))
         );
 
@@ -290,20 +297,27 @@
             state.particles.length = desiredCount;
         }
 
-        const emojiColors = elements.colorMode.value === 'emoji' ? 
+        const emojiColors = elements.colorMode.value === 'emoji' ?
             buildEmojiColorMap(text) : new Map();
 
         distributeParticles(emojiColors);
-        elements.particleCount.textContent = `Частиц: ${state.particles.length}`;
+        const count = state.particles.length;
+        elements.particleCount.textContent = `Частиц: ${count}`;
+
+        // Обновляем overlay счетчика частиц если включен
+        if (elements.showParticleCount.checked) {
+            elements.particleCountOverlay.textContent = `Частиц: ${count}`;
+        }
+
     }
 
     function distributeParticles(emojiColors) {
         const pointCount = state.targetPoints.length;
-        
+
         for (let i = 0; i < state.particles.length; i++) {
             const pt = state.targetPoints[Math.floor(Math.random() * pointCount)];
             const p = state.particles[i];
-            
+
             p.tx = pt.x;
             p.ty = pt.y;
 
@@ -341,12 +355,12 @@
 
         for (let i = 0; i < state.particles.length; i++) {
             const p = state.particles[i];
-            
+
             // Движение к цели
             const dx = p.tx - p.x, dy = p.ty - p.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
             const speedFactor = p.speed * spd * dt * (0.5 + dist / 200);
-            
+
             p.vx += dx * 0.015 * speedFactor;
             p.vy += dy * 0.015 * speedFactor;
 
@@ -398,14 +412,14 @@
 
         for (let i = 0; i < state.particles.length; i++) {
             const p = state.particles[i];
-            
+
             // Определение цвета
             if (colorMode === 'emoji' && p.useCustomColor) {
                 ctx.fillStyle = p.color;
             } else if (colorMode === 'monochrome') {
                 ctx.fillStyle = `rgba(255, 255, 255, 0.9)`;
             } else {
-                ctx.fillStyle = `hsl(${p.hue + i % 50} 100% 60% / 0.9)`;
+                ctx.fillStyle = `hsla(${p.hue + i % 50}, 100%, 60%, 0.9)`;
             }
 
             // Рендер частицы
@@ -414,7 +428,7 @@
             ctx.fill();
 
             // Рендер хвостов (с оптимизацией производительности)
-            if (i % CONFIG.PERFORMANCE.PARTICLE_DRAW_RATIO === 0 && 
+            if (i % CONFIG.PERFORMANCE.PARTICLE_DRAW_RATIO === 0 &&
                 Math.random() > CONFIG.PERFORMANCE.TRAIL_CHANCE) {
                 ctx.strokeStyle = ctx.fillStyle.replace('0.9', '0.3');
                 ctx.lineWidth = Math.max(0.3, p.size * 0.15);
@@ -431,8 +445,28 @@
         if (now - state.lastFpsUpdate >= 1000) {
             state.fps = Math.round((state.frameCount * 1000) / (now - state.lastFpsUpdate));
             elements.fps.textContent = `FPS: ${state.fps}`;
+
+            // Обновляем overlay FPS если включен
+            if (elements.showFps.checked) {
+                elements.fpsOverlay.textContent = `FPS: ${state.fps}`;
+            }
+
             state.frameCount = 0;
             state.lastFpsUpdate = now;
+        }
+    }
+
+    function updateOverlayControls() {
+        // Показываем/скрываем overlay элементы
+        elements.fpsOverlay.classList.toggle('hidden', !elements.showFps.checked);
+        elements.particleCountOverlay.classList.toggle('hidden', !elements.showParticleCount.checked);
+
+        // Обновляем значения в overlay при включении
+        if (elements.showFps.checked) {
+            elements.fpsOverlay.textContent = `FPS: ${state.fps}`;
+        }
+        if (elements.showParticleCount.checked) {
+            updateParticleCountDisplay();
         }
     }
 
@@ -442,7 +476,7 @@
 
         updateFPS(now);
         ctx.clearRect(0, 0, state.W, state.H);
-        
+
         updateParticles(dt);
         renderParticles();
 
@@ -469,6 +503,7 @@
         elements.shuffle.addEventListener('click', scatterParticles);
         elements.themeSelect.addEventListener('change', () => {
             document.body.setAttribute('data-theme', elements.themeSelect.value);
+            updateOverlayControls();
         });
 
         // Размер частиц
@@ -507,6 +542,9 @@
             document.addEventListener(event, () => FullscreenManager.handleChange());
         });
 
+        elements.showFps.addEventListener('change', updateOverlayControls);
+        elements.showParticleCount.addEventListener('change', updateOverlayControls);
+
         // Динамические параметры
         elements.txt.addEventListener('input', updateEmojiPreview);
         elements.density.addEventListener('input', rebuildText);
@@ -543,13 +581,14 @@
         initSliders();
         initEventListeners();
         updateEmojiPreview();
-        
+
         resize();
         setTimeout(() => {
             rebuildText();
             scatterParticles();
             requestAnimationFrame(tick);
         }, 100);
+        updateOverlayControls();
     }
 
     // Запуск приложения

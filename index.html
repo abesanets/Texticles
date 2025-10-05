@@ -10,11 +10,14 @@
 
 <body data-theme="neon-dark">
   <div class="app">
-    <!-- canvas-wrap / stage: оставляем id="stage" — именно его использует script.js -->
     <div class="canvas-wrap" id="stage" style="max-height:90vh; position: relative;">
       <canvas id="c"></canvas>
 
-      <!-- Кнопка полноэкранного режима (видна поверх canvas) -->
+      <!-- Overlay элементы ДОЛЖНЫ быть здесь -->
+      <div id="fpsOverlay" class="overlay hidden">FPS: 60</div>
+      <div id="particleCountOverlay" class="overlay hidden">Частиц: 0</div>
+
+      <!-- Кнопка полноэкранного режима -->
       <button id="fullscreenBtn" class="fullscreen-btn" title="Во весь экран (F)" aria-label="Во весь экран"
         style="position: absolute; right: 12px; top: 12px; z-index: 60; color: #fff; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer;">⤢</button>
     </div>
@@ -112,6 +115,26 @@
               <option value="cyber-purple">Cyber Purple 💜</option>
               <option value="ocean-blue">Ocean Blue 🌊</option>
             </select>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-title">Отображение</div>
+
+          <div class="input-group toggle-group">
+            <label>Показать FPS</label>
+            <label class="toggle">
+              <input id="showFps" type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="input-group toggle-group">
+            <label>Показать счетчик частиц</label>
+            <label class="toggle">
+              <input id="showParticleCount" type="checkbox">
+              <span class="toggle-slider"></span>
+            </label>
           </div>
         </div>
 
