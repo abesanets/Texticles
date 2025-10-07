@@ -681,6 +681,82 @@
         });
     });
 
+    // ========== LOCAL STORAGE ==========
+    // === Автоматическое сохранение и восстановление настроек ===
+
+    const STORAGE_KEY = "texticles-settings";
+    const controls = document.querySelectorAll("input, textarea, select");
+
+    // Функция для применения отображения FPS/Particles
+    function applyOverlayState() {
+        if (typeof updateOverlayControls === "function") {
+            updateOverlayControls();
+        }
+    }
+
+    // Восстанавливаем значения при загрузке
+    window.addEventListener("DOMContentLoaded", () => {
+        const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+
+        controls.forEach((el) => {
+            const id = el.id;
+            if (!id) return;
+
+            if (savedData[id] !== undefined) {
+                if (el.type === "checkbox") {
+                    el.checked = savedData[id];
+                } else {
+                    el.value = savedData[id];
+                }
+
+                // Если это тема — применяем её
+                if (id === "themeSelect") {
+                    document.body.dataset.theme = el.value;
+                }
+            }
+        });
+
+        // 💡 После восстановления — обновляем оверлеи
+        applyOverlayState();
+    });
+
+    // Сохраняем при изменении любого элемента
+    controls.forEach((el) => {
+        el.addEventListener("input", saveSettings);
+        el.addEventListener("change", saveSettings);
+    });
+
+    function saveSettings() {
+        const data = {};
+
+        controls.forEach((el) => {
+            const id = el.id;
+            if (!id) return;
+
+            if (el.type === "checkbox") {
+                data[id] = el.checked;
+            } else {
+                data[id] = el.value;
+            }
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+
+        // Автообновление темы
+        const themeSelect = document.getElementById("themeSelect");
+        if (themeSelect) {
+            document.body.dataset.theme = themeSelect.value;
+        }
+
+        // 💡 При изменении чекбоксов — обновляем оверлеи в реальном времени
+        applyOverlayState();
+    }
+
+    // Очистка настроек
+    window.resetSettings = function () {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+    };
 
 
     // ========== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ==========
