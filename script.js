@@ -319,6 +319,7 @@
 
     function distributeParticles(emojiColors) {
         const pointCount = state.targetPoints.length;
+        const colorMode = elements.colorMode.value;
 
         for (let i = 0; i < state.particles.length; i++) {
             const pt = state.targetPoints[Math.floor(Math.random() * pointCount)];
@@ -327,7 +328,8 @@
             p.tx = pt.x;
             p.ty = pt.y;
 
-            if (elements.colorMode.value === 'emoji') {
+            // Только режим emoji использует кастомные цвета, остальные - свои алгоритмы
+            if (colorMode === 'emoji') {
                 const offX = Math.round(pt.x - state.center.x + offscreen.canvas.width / 2);
                 const offY = Math.round(pt.y - state.center.y + offscreen.canvas.height / 2);
                 const colorKey = `${offX},${offY}`;
@@ -340,6 +342,7 @@
                     p.hue = Math.random() * 360;
                 }
             } else {
+                // Для всех остальных режимов используем случайный hue как основу
                 p.useCustomColor = false;
                 p.hue = Math.random() * 360;
             }
@@ -466,18 +469,67 @@
         const colorMode = elements.colorMode.value;
         const themeColor1 = getComputedStyle(document.body).getPropertyValue('--particle1').trim();
         const themeColor2 = getComputedStyle(document.body).getPropertyValue('--particle2').trim();
+        const now = Date.now();
 
         for (let i = 0; i < state.particles.length; i++) {
             const p = state.particles[i];
 
-            // Определение цвета
+            // Определение цвета в зависимости от режима
+            let particleColor;
+
             if (colorMode === 'emoji' && p.useCustomColor) {
-                ctx.fillStyle = p.color;
+                particleColor = p.color;
             } else if (colorMode === 'monochrome') {
-                ctx.fillStyle = `rgba(255, 255, 255, 0.9)`;
-            } else {
-                ctx.fillStyle = `hsla(${p.hue + i % 50}, 100%, 60%, 0.9)`;
+                particleColor = `rgba(255, 255, 255, 0.9)`;
+            } else if (colorMode === 'gradient') {
+                particleColor = `hsla(${p.hue + i % 50}, 100%, 60%, 0.9)`;
             }
+            // НОВЫЕ РЕЖИМЫ
+            else if (colorMode === 'fire') {
+                // Огненные цвета: красный, оранжевый, желтый
+                const fireHue = 20 + (p.hue % 40); // 20-60 градусов
+                const saturation = 80 + Math.sin(now * 0.005 + i) * 20;
+                particleColor = `hsla(${fireHue}, ${saturation}%, 60%, 0.9)`;
+            } else if (colorMode === 'ice') {
+                // Ледяные синие тона
+                const iceHue = 180 + (p.hue % 60); // 180-240 градусов
+                const lightness = 70 + Math.cos(now * 0.003 + i) * 15;
+                particleColor = `hsla(${iceHue}, 70%, ${lightness}%, 0.9)`;
+            } else if (colorMode === 'neon') {
+                // Яркие неоновые цвета
+                const neonHue = (p.hue * 3) % 360;
+                const pulse = Math.sin(now * 0.01 + i * 0.1) * 0.3 + 0.7;
+                particleColor = `hsla(${neonHue}, 100%, ${50 + pulse * 20}%, 0.9)`;
+            } else if (colorMode === 'pastel') {
+                // Мягкие пастельные тона
+                const pastelHue = p.hue % 360;
+                particleColor = `hsla(${pastelHue}, 60%, 75%, 0.8)`;
+            } else if (colorMode === 'galaxy') {
+                // Галактические фиолетовые и синие тона
+                const galaxyHue = 270 + (p.hue % 90); // 270-360 градусов
+                const twinkle = Math.sin(now * 0.002 + i * 0.5) * 0.4 + 0.6;
+                particleColor = `hsla(${galaxyHue}, 80%, ${40 + twinkle * 30}%, 0.9)`;
+            } else if (colorMode === 'forest') {
+                // Зеленые лесные тона
+                const forestHue = 90 + (p.hue % 60); // 90-150 градусов
+                const variation = Math.cos(now * 0.001 + i) * 15;
+                particleColor = `hsla(${forestHue}, 80%, ${35 + variation}%, 0.9)`;
+            } else if (colorMode === 'ocean') {
+                // Океанские сине-зеленые тона
+                const oceanHue = 160 + (p.hue % 80); // 160-240 градусов
+                const wave = Math.sin(now * 0.004 + p.x * 0.01 + p.y * 0.01) * 10;
+                particleColor = `hsla(${oceanHue}, 85%, ${45 + wave}%, 0.9)`;
+            } else if (colorMode === 'lava') {
+                // Горячие лавовые цвета с пульсацией
+                const lavaHue = 10 + (Math.sin(now * 0.005 + i * 0.2) * 10); // 0-20 градусов
+                const glow = Math.sin(now * 0.01 + i) * 0.5 + 0.5;
+                particleColor = `hsla(${lavaHue}, 100%, ${40 + glow * 20}%, 0.9)`;
+            } else {
+                // Fallback на градиент
+                particleColor = `hsla(${p.hue + i % 50}, 100%, 60%, 0.9)`;
+            }
+
+            ctx.fillStyle = particleColor;
 
             // Рендер частицы
             ctx.beginPath();
@@ -487,7 +539,7 @@
             // Рендер хвостов (с оптимизацией производительности)
             if (i % CONFIG.PERFORMANCE.PARTICLE_DRAW_RATIO === 0 &&
                 Math.random() > CONFIG.PERFORMANCE.TRAIL_CHANCE) {
-                ctx.strokeStyle = ctx.fillStyle.replace('0.9', '0.3');
+                ctx.strokeStyle = particleColor.replace('0.9', '0.3');
                 ctx.lineWidth = Math.max(0.3, p.size * 0.15);
                 ctx.beginPath();
                 ctx.moveTo(p.x - p.vx * 2, p.y - p.vy * 2);
