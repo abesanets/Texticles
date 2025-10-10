@@ -320,9 +320,10 @@
         distributeParticles(emojiColors);
 
         const count = state.particles.length;
-        elements.particleCount.textContent = `Частиц: ${count}`;
+        const particleLabel = translations["overlay.particles"] || "Частиц";
+        elements.particleCount.textContent = `${particleLabel}: ${count}`;
         if (elements.showParticleCount.checked) {
-            elements.particleCountOverlay.textContent = `Частиц: ${count}`;
+            elements.particleCountOverlay.textContent = `${particleLabel}: ${count}`;
         }
     }
 
@@ -663,13 +664,81 @@
         elements.fpsOverlay.classList.toggle('hidden', !elements.showFps.checked);
         elements.particleCountOverlay.classList.toggle('hidden', !elements.showParticleCount.checked);
 
+        const fpsLabel = translations["overlay.fps"] || "FPS";
+        const particleLabel = translations["overlay.particles"] || "Частиц";
+
         if (elements.showFps.checked) {
-            elements.fpsOverlay.textContent = `FPS: ${state.fps}`;
+            elements.fpsOverlay.textContent = `${fpsLabel}: ${state.fps}`;
         }
         if (elements.showParticleCount.checked) {
-            elements.particleCountOverlay.textContent = `Частиц: ${state.particles.length}`;
+            elements.particleCountOverlay.textContent = `${particleLabel}: ${state.particles.length}`;
         }
     }
+
+    // ========== MULTILANGUAGE SYSTEM ==========
+    const LANGUAGE_STORAGE_KEY = "texticles-language";
+    let currentLanguage = 'ru';
+    let translations = {};
+
+    // Загрузка переводов из JSON файла
+    async function loadTranslations(lang) {
+        try {
+            const response = await fetch(`translations/${lang}.json`);
+            translations = await response.json();
+            applyTranslations();
+        } catch (error) {
+            console.error(`Error loading translations for ${lang}:`, error);
+        }
+    }
+
+    // Применение переводов ко всем элементам с data-i18n
+    function applyTranslations() {
+        const elementsList = document.querySelectorAll('[data-i18n]');
+        elementsList.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            const text = translations[key];
+            if (!text) return;
+
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = text;
+            } else if (element.tagName === 'OPTION') {
+                element.textContent = text;
+            } else {
+                if (text.includes('<br>') || text.includes('<span') || text.includes('<b')) {
+                    element.innerHTML = text;
+                } else {
+                    element.textContent = text;
+                }
+            }
+        });
+
+        // 🔄 обновляем надписи FPS / Частиц
+        if (typeof updateOverlayControls === "function") {
+            updateOverlayControls();
+        }
+    }
+
+
+    // Инициализация языка
+    function initLanguage() {
+        const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+        if (savedLanguage) {
+            currentLanguage = savedLanguage;
+        }
+
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+            languageSelect.value = currentLanguage;
+            languageSelect.addEventListener('change', (e) => {
+                currentLanguage = e.target.value;
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+                loadTranslations(currentLanguage);
+            });
+        }
+
+        loadTranslations(currentLanguage);
+    }
+
 
     // ========== LOCAL STORAGE ==========
     const STORAGE_KEY = "texticles-settings";
@@ -708,7 +777,11 @@
         updateOverlayControls();
     }
 
-    window.addEventListener("DOMContentLoaded", restoreSettings);
+    window.addEventListener("DOMContentLoaded", () => {
+        restoreSettings();
+        initLanguage();
+    });
+
     controls.forEach(el => {
         el.addEventListener("input", saveSettings);
         el.addEventListener("change", saveSettings);
@@ -718,6 +791,7 @@
         localStorage.removeItem(STORAGE_KEY);
         location.reload();
     };
+
 
     // ========== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ==========
     function init() {
