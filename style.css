@@ -1,16 +1,21 @@
 :root {
     --fg: #1d1d1f;
-    --bg1: #f0f4f8; /* Added default bg1 for light theme */
-    --bg2: #e2e8f0; /* Added default bg2 */
+    --bg1: #f0f4f8;
+    /* Added default bg1 for light theme */
+    --bg2: #e2e8f0;
+    /* Added default bg2 */
     --bg-panel: rgba(255, 255, 255, 0.75);
     --bg-card: rgba(255, 255, 255, 0.9);
     --border: rgba(0, 0, 0, 0.1);
     --shadow: rgba(0, 0, 0, 0.1);
     --accent: #007AFF;
-    --accent-rgb: 0, 122, 255; /* Added for rgba usage */
-    --particle1: #00aaff; /* Added defaults for particles */
+    --accent-rgb: 0, 122, 255;
+    /* Added for rgba usage */
+    --particle1: #00aaff;
+    /* Added defaults for particles */
     --particle2: #0077ff;
-    --transition-time: 0.3s; /* Global transition timing */
+    --transition-time: 0.3s;
+    /* Global transition timing */
     --animation-ease: ease-in-out;
 }
 
@@ -33,7 +38,8 @@
     --bg2: #4a4a4a;
     --accent: #ffbb00;
     --accent-rgb: 255, 187, 0;
-    --particle1: #ffbb00; /* Added particles for consistency */
+    --particle1: #ffbb00;
+    /* Added particles for consistency */
     --particle2: #ffd700;
     --fg: #ffffff;
     --bg-panel: #2b2b2b;
@@ -66,7 +72,8 @@
     --fg: #ffffff;
     --bg-panel: #0f3460aa;
     --bg-card: #1a1a2ecc;
-    --border: rgba(255, 0, 255, 0.1); /* Neon border */
+    --border: rgba(255, 0, 255, 0.1);
+    /* Neon border */
     --shadow: rgba(255, 42, 109, 0.2);
 }
 
@@ -207,9 +214,11 @@ body {
 .app {
     display: grid;
     grid-template-columns: 1fr 380px;
-    gap: clamp(16px, 2vw, 24px); /* Optimized responsive gap */
+    gap: clamp(16px, 2vw, 24px);
+    /* Optimized responsive gap */
     min-height: 100vh;
-    padding: clamp(16px, 2vw, 24px); /* Responsive padding */
+    padding: clamp(16px, 2vw, 24px);
+    /* Responsive padding */
 }
 
 .canvas-wrap {
@@ -226,7 +235,8 @@ canvas {
     display: block;
     width: 100%;
     height: 100%;
-    transition: filter var(--transition-time); /* Added for potential effects */
+    transition: filter var(--transition-time);
+    /* Added for potential effects */
 }
 
 .panel-wrapper {
@@ -285,7 +295,8 @@ canvas {
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.6s var(--animation-ease) forwards;
-    animation-delay: calc(0.2s * var(--section-index, 0)); /* Staggered animation */
+    animation-delay: calc(0.2s * var(--section-index, 0));
+    /* Staggered animation */
 }
 
 .section:last-child {
@@ -306,7 +317,8 @@ h2 {
     font-weight: 700;
     letter-spacing: -0.5px;
     color: var(--accent);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    /* Added subtle shadow */
 }
 
 .section-title {
@@ -353,7 +365,8 @@ select:focus {
 }
 
 textarea {
-    resize: vertical; /* Changed to vertical for better UX */
+    resize: vertical;
+    /* Changed to vertical for better UX */
     min-height: 80px;
 }
 
@@ -412,7 +425,8 @@ input[type="range"]:hover::-webkit-slider-thumb {
     align-items: center;
     gap: 8px;
     position: relative;
-    overflow: hidden; /* For ripple effect */
+    overflow: hidden;
+    /* For ripple effect */
 }
 
 /* Added ripple effect on button click */
@@ -435,14 +449,15 @@ input[type="range"]:hover::-webkit-slider-thumb {
     height: 300px;
 }
 
-.btn > * {
+.btn>* {
     position: relative;
     z-index: 1;
 }
 
 .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.3); /* Glow effect */
+    box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.3);
+    /* Glow effect */
 }
 
 .btn:active {
@@ -502,12 +517,15 @@ footer {
         left: 16px;
         width: auto;
         max-height: 60vh;
-        height: auto; /* Allow dynamic height */
-        z-index: 1000; /* Ensure above canvas */
+        height: auto;
+        /* Allow dynamic height */
+        z-index: 1000;
+        /* Ensure above canvas */
     }
 
     .panel {
-        border-radius: 24px 24px 0 0; /* Rounded top for bottom panel */
+        border-radius: 24px 24px 0 0;
+        /* Rounded top for bottom panel */
     }
 }
 
@@ -676,21 +694,22 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.toggle input:checked + .toggle-slider {
+.toggle input:checked+.toggle-slider {
     background-color: var(--accent);
 }
 
-.toggle input:checked + .toggle-slider:before {
+.toggle input:checked+.toggle-slider:before {
     transform: translateX(24px);
 }
 
-.toggle input:focus + .toggle-slider {
+.toggle input:focus+.toggle-slider {
     box-shadow: 0 0 1px var(--accent);
 }
 
 /* Custom cursor with glow effect */
 #custom-cursor {
-    width: 10px; /* Increased size for better visibility */
+    width: 10px;
+    /* Increased size for better visibility */
     height: 10px;
     background-color: rgba(var(--accent-rgb), 0.2);
     border-radius: 50%;
@@ -700,7 +719,8 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     display: none;
     transition: background-color var(--transition-time), transform 0.1s var(--animation-ease), box-shadow var(--transition-time);
     z-index: 100;
-    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5); /* Added glow */
+    box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
+    /* Added glow */
 }
 
 .preset-buttons {
@@ -739,9 +759,11 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     0% {
         box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(var(--accent-rgb), 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
     }
@@ -838,4 +860,158 @@ button:hover,
 input[type="range"]:hover,
 .toggle-slider:hover {
     filter: brightness(1.1);
+}
+
+/* Стили для прелоадера */
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-panel);
+    color: var(--accent);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+#preloader * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.preloader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 1rem; /* ✅ добавляем отступы между элементами */
+}
+
+
+.preloader-logo {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    text-align: center;
+    background: var(--accent);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+    position: relative;
+}
+
+.preloader-logo::after {
+    content: "✨";
+    position: absolute;
+    top: -10px;
+    right: -30px;
+    font-size: 2rem;
+    animation: sparkle 2s infinite alternate;
+}
+
+.progress-container {
+    width: 80%;
+    max-width: 500px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.479);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.loading-text {
+    font-size: 1.2rem;
+    height: 40px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 1rem;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.text-item {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    text-shadow: 0 0 10px var(--accent);
+}
+
+.text-item.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.text-item.leaving {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.skip-text {
+    position: absolute;
+    bottom: 2rem;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    animation: fadeInOut 2s infinite alternate;
+}
+
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+@keyframes sparkle {
+    from {
+        opacity: 0.5;
+        transform: scale(0.8);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes fadeInOut {
+    from {
+        opacity: 0.4;
+    }
+
+    to {
+        opacity: 0.8;
+    }
+}
+
+/* Скрыть основное содержимое до загрузки */
+.main-content {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.main-content.loaded {
+    opacity: 1;
 }

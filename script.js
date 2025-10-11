@@ -114,6 +114,125 @@
         }
     };
 
+    // ========== СИСТЕМА ПРЕЛОАДЕРА ==========
+    const LOADING_CONFIG = {
+        initialDelay: 500,
+        pauseProbability: 0.3,
+        pauseDuration: { min: 200, max: 800 },
+        progressStep: { min: 2.5, max: 7 },
+        updateInterval: { min: 10, max: 50 },
+        textChangePoints: [25, 55, 80]
+    };
+
+    let currentTextIndex = 0;
+    let progress = 0;
+    let skipRequested = false;
+    let timeoutId = null;
+
+    function initPreloader() {
+        const preloader = document.getElementById('preloader');
+        const progressBar = document.querySelector('.progress-bar');
+        const textItems = document.querySelectorAll('.text-item');
+        const mainContent = document.querySelector('.main-content');
+
+        function updateProgress() {
+            if (skipRequested) {
+                progress = 100;
+                progressBar.style.width = progress + '%';
+                completeLoading();
+                return;
+            }
+
+            const shouldPause = Math.random() < LOADING_CONFIG.pauseProbability;
+            if (shouldPause) {
+                const pauseTime = Math.random() *
+                    (LOADING_CONFIG.pauseDuration.max - LOADING_CONFIG.pauseDuration.min) +
+                    LOADING_CONFIG.pauseDuration.min;
+
+                timeoutId = setTimeout(updateProgress, pauseTime);
+                return;
+            }
+
+            const increment = Math.random() *
+                (LOADING_CONFIG.progressStep.max - LOADING_CONFIG.progressStep.min) +
+                LOADING_CONFIG.progressStep.min;
+
+            progress += increment;
+            if (progress > 100) progress = 100;
+
+            progressBar.style.width = progress + '%';
+
+            if (progress >= LOADING_CONFIG.textChangePoints[0] && currentTextIndex === 0) {
+                changeText(1);
+            } else if (progress >= LOADING_CONFIG.textChangePoints[1] && currentTextIndex === 1) {
+                changeText(2);
+            } else if (progress >= LOADING_CONFIG.textChangePoints[2] && currentTextIndex === 2) {
+                changeText(3);
+            }
+
+            if (progress >= 100) {
+                completeLoading();
+                return;
+            }
+
+            const nextUpdate = Math.random() *
+                (LOADING_CONFIG.updateInterval.max - LOADING_CONFIG.updateInterval.min) +
+                LOADING_CONFIG.updateInterval.min;
+
+            timeoutId = setTimeout(updateProgress, nextUpdate);
+        }
+
+        function changeText(index) {
+            if (index < textItems.length) {
+                textItems[currentTextIndex].classList.add('leaving');
+                setTimeout(() => {
+                    textItems[currentTextIndex].classList.remove('active', 'leaving');
+                    currentTextIndex = index;
+                    textItems[currentTextIndex].classList.add('active');
+                }, 500);
+            }
+        }
+
+        function completeLoading() {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+
+            if (currentTextIndex !== 3) {
+                changeText(3);
+            }
+
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+
+                mainContent.classList.add('loaded');
+
+                // Инициализируем основное приложение
+                if (typeof initTexticlesApp === 'function') {
+                    initTexticlesApp();
+                }
+            }, 500);
+        }
+
+        // Запуск прогресса
+        timeoutId = setTimeout(updateProgress, LOADING_CONFIG.initialDelay);
+
+        // Обработка нажатия ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !skipRequested) {
+                skipRequested = true;
+                if (timeoutId) {
+                    clearTimeout(timeoutId);
+                }
+                updateProgress();
+            }
+        });
+    }
+
+    // Запускаем прелоадер при загрузке страницы
+    document.addEventListener('DOMContentLoaded', initPreloader);
+
     // ========== ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРОВ И ПРЕСЕТОВ ==========
     function initSliders() {
         const sliders = [elements.density, elements.size, elements.speed, elements.interaction];
