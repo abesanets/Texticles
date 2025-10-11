@@ -1,21 +1,14 @@
 :root {
     --fg: #1d1d1f;
     --bg1: #f0f4f8;
-    /* Added default bg1 for light theme */
     --bg2: #e2e8f0;
-    /* Added default bg2 */
     --bg-panel: rgba(255, 255, 255, 0.75);
     --bg-card: rgba(255, 255, 255, 0.9);
     --border: rgba(0, 0, 0, 0.1);
     --shadow: rgba(0, 0, 0, 0.1);
     --accent: #007AFF;
     --accent-rgb: 0, 122, 255;
-    /* Added for rgba usage */
-    --particle1: #00aaff;
-    /* Added defaults for particles */
-    --particle2: #0077ff;
     --transition-time: 0.3s;
-    /* Global transition timing */
     --animation-ease: ease-in-out;
 }
 
@@ -24,8 +17,6 @@
     --bg2: #1a0033;
     --accent: #7b61ff;
     --accent-rgb: 123, 97, 255;
-    --particle1: #00ffff;
-    --particle2: #ff00ff;
     --fg: #ffffff;
     --bg-panel: rgba(30, 30, 40, 0.8);
     --bg-card: rgba(40, 40, 50, 0.9);
@@ -38,9 +29,6 @@
     --bg2: #4a4a4a;
     --accent: #ffbb00;
     --accent-rgb: 255, 187, 0;
-    --particle1: #ffbb00;
-    /* Added particles for consistency */
-    --particle2: #ffd700;
     --fg: #ffffff;
     --bg-panel: #2b2b2b;
     --bg-card: #1414146b;
@@ -53,8 +41,6 @@
     --bg2: #d8bfd8;
     --accent: #ff69b4;
     --accent-rgb: 255, 105, 180;
-    --particle1: #ff1493;
-    --particle2: #9370db;
     --fg: #8b4513;
     --bg-panel: #ffffff80;
     --bg-card: #ffffff60;
@@ -67,13 +53,10 @@
     --bg2: #16213e;
     --accent: #ff2a6d;
     --accent-rgb: 255, 42, 109;
-    --particle1: #05d9e8;
-    --particle2: #d1f7ff;
     --fg: #ffffff;
     --bg-panel: #0f3460aa;
     --bg-card: #1a1a2ecc;
     --border: rgba(255, 0, 255, 0.1);
-    /* Neon border */
     --shadow: rgba(255, 42, 109, 0.2);
 }
 
@@ -82,8 +65,6 @@
     --bg2: #161b22;
     --accent: #58a6ff;
     --accent-rgb: 88, 166, 255;
-    --particle1: #1f6feb;
-    --particle2: #388bfd;
     --fg: #f0f6fc;
     --bg-panel: #21262dcc;
     --bg-card: #30363daa;
@@ -96,8 +77,6 @@
     --bg2: #ffd9b3;
     --accent: #ff6a00;
     --accent-rgb: 255, 106, 0;
-    --particle1: #ffd200;
-    --particle2: #ff6a00;
     --fg: #2b2b2b;
     --bg-panel: rgba(255, 255, 255, 0.85);
     --bg-card: rgba(255, 235, 220, 0.9);
@@ -110,8 +89,6 @@
     --bg2: #dffef0;
     --accent: #2bbf9b;
     --accent-rgb: 43, 191, 155;
-    --particle1: #9ef3d5;
-    --particle2: #2bbf9b;
     --fg: #133a32;
     --bg-panel: rgba(240, 255, 250, 0.9);
     --bg-card: rgba(220, 250, 240, 0.9);
@@ -124,8 +101,6 @@
     --bg2: #efe1c8;
     --accent: #b66b2f;
     --accent-rgb: 182, 107, 47;
-    --particle1: #e3c07a;
-    --particle2: #b66b2f;
     --fg: #3a2b18;
     --bg-panel: rgba(247, 239, 225, 0.95);
     --bg-card: rgba(239, 225, 200, 0.95);
@@ -138,8 +113,6 @@
     --bg2: #e7ddfb;
     --accent: #8a63ff;
     --accent-rgb: 138, 99, 255;
-    --particle1: #cfa3ff;
-    --particle2: #8a63ff;
     --fg: #2f2340;
     --bg-panel: rgba(244, 238, 252, 0.9);
     --bg-card: rgba(230, 220, 245, 0.9);
@@ -152,8 +125,6 @@
     --bg2: #e9ebee;
     --accent: #8b8f95;
     --accent-rgb: 139, 143, 149;
-    --particle1: #cfcfcf;
-    --particle2: #8b8f95;
     --fg: #1b1b1b;
     --bg-panel: rgba(250, 250, 252, 0.75);
     --bg-card: rgba(230, 232, 235, 0.85);
@@ -161,14 +132,11 @@
     --shadow: rgba(0, 0, 0, 0.1);
 }
 
-/* Added a new modern theme: aurora-light as default extension */
 [data-theme="aurora-light"] {
     --bg1: #f0f4f8;
     --bg2: #e2e8f0;
     --accent: #007AFF;
     --accent-rgb: 0, 122, 255;
-    --particle1: #00aaff;
-    --particle2: #0077ff;
     --fg: #1d1d1f;
     --bg-panel: rgba(255, 255, 255, 0.75);
     --bg-card: rgba(255, 255, 255, 0.9);
@@ -176,14 +144,11 @@
     --shadow: rgba(0, 0, 0, 0.1);
 }
 
-/* Added a new cool theme: electric-neon */
 [data-theme="electric-neon"] {
     --bg1: #000000;
     --bg2: #1e0033;
     --accent: #00ff9f;
     --accent-rgb: 0, 255, 159;
-    --particle1: #ff00ff;
-    --particle2: #00ffff;
     --fg: #ffffff;
     --bg-panel: rgba(10, 10, 20, 0.85);
     --bg-card: rgba(20, 20, 30, 0.95);
@@ -215,10 +180,8 @@ body {
     display: grid;
     grid-template-columns: 1fr 380px;
     gap: clamp(16px, 2vw, 24px);
-    /* Optimized responsive gap */
     min-height: 100vh;
     padding: clamp(16px, 2vw, 24px);
-    /* Responsive padding */
 }
 
 .canvas-wrap {
@@ -236,7 +199,6 @@ canvas {
     width: 100%;
     height: 100%;
     transition: filter var(--transition-time);
-    /* Added for potential effects */
 }
 
 .panel-wrapper {
@@ -280,6 +242,11 @@ canvas {
     background-color: rgba(255, 255, 255, 0.3);
 }
 
+.panel {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
 @keyframes slideIn {
     to {
         opacity: 1;
@@ -287,7 +254,6 @@ canvas {
     }
 }
 
-/* Added fade-in animation for sections */
 .section {
     margin-bottom: 24px;
     padding-bottom: 20px;
@@ -296,7 +262,6 @@ canvas {
     transform: translateY(20px);
     animation: fadeInUp 0.6s var(--animation-ease) forwards;
     animation-delay: calc(0.2s * var(--section-index, 0));
-    /* Staggered animation */
 }
 
 .section:last-child {
@@ -322,7 +287,6 @@ h2 {
     -webkit-text-fill-color: transparent;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
-
 
 .section-title {
     font-size: 16px;
@@ -369,7 +333,6 @@ select:focus {
 
 textarea {
     resize: vertical;
-    /* Changed to vertical for better UX */
     min-height: 80px;
 }
 
@@ -387,6 +350,7 @@ input[type="range"] {
     appearance: none;
     -webkit-appearance: none;
     transition: background var(--transition-time);
+    will-change: transform;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -402,6 +366,16 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]:hover::-webkit-slider-thumb {
     transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform var(--transition-time);
 }
 
 .slider-value {
@@ -429,10 +403,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
     gap: 8px;
     position: relative;
     overflow: hidden;
-    /* For ripple effect */
+    will-change: transform;
 }
 
-/* Added ripple effect on button click */
 .btn::before {
     content: '';
     position: absolute;
@@ -452,7 +425,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
     height: 300px;
 }
 
-.btn>* {
+.btn > * {
     position: relative;
     z-index: 1;
 }
@@ -460,7 +433,6 @@ input[type="range"]:hover::-webkit-slider-thumb {
 .btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.3);
-    /* Glow effect */
 }
 
 .btn:active {
@@ -521,18 +493,14 @@ footer {
         width: auto;
         max-height: 60vh;
         height: auto;
-        /* Allow dynamic height */
         z-index: 1000;
-        /* Ensure above canvas */
     }
 
     .panel {
         border-radius: 24px 24px 0 0;
-        /* Rounded top for bottom panel */
     }
 }
 
-/* Fullscreen styles optimized */
 #stage-wrap {
     display: flex;
     gap: 12px;
@@ -588,7 +556,7 @@ body[data-fullscreen="true"] .hide-on-fullscreen {
     z-index: 60;
     background: none;
     border: none;
-    color: var(--fg);
+    color: var(--accent);
     font-size: 22px;
     cursor: pointer;
     opacity: 0.7;
@@ -617,7 +585,6 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     border-radius: 0;
 }
 
-/* Overlay with animation */
 .overlay {
     position: absolute;
     top: 12px;
@@ -651,7 +618,6 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     top: 32px;
 }
 
-/* Toggle with improved animation */
 .toggle-group {
     display: flex;
     justify-content: space-between;
@@ -697,22 +663,20 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.toggle input:checked+.toggle-slider {
+.toggle input:checked + .toggle-slider {
     background-color: var(--accent);
 }
 
-.toggle input:checked+.toggle-slider:before {
+.toggle input:checked + .toggle-slider:before {
     transform: translateX(24px);
 }
 
-.toggle input:focus+.toggle-slider {
+.toggle input:focus + .toggle-slider {
     box-shadow: 0 0 1px var(--accent);
 }
 
-/* Custom cursor with glow effect */
 #custom-cursor {
     width: 10px;
-    /* Increased size for better visibility */
     height: 10px;
     background-color: rgba(var(--accent-rgb), 0.2);
     border-radius: 50%;
@@ -723,7 +687,6 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     transition: background-color var(--transition-time), transform 0.1s var(--animation-ease), box-shadow var(--transition-time);
     z-index: 100;
     box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.5);
-    /* Added glow */
 }
 
 .preset-buttons {
@@ -751,7 +714,6 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     overflow: hidden;
 }
 
-/* Added pulse animation for preset buttons on hover */
 .preset-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.3);
@@ -762,11 +724,9 @@ body[data-theme="mono-glass"] .fullscreen-btn {
     0% {
         box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0.7);
     }
-
     70% {
         box-shadow: 0 0 0 10px rgba(var(--accent-rgb), 0);
     }
-
     100% {
         box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0);
     }
@@ -782,47 +742,80 @@ textarea::placeholder {
     font-style: italic;
 }
 
-/* Mobile overlay with fade-in */
 #mobile-overlay {
-    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, #eb9636 0%, #c49537 100%);
+    /* Основной фон: solid версия --bg-panel без прозрачности */
+    background: linear-gradient(160deg, var(--bg1), var(--bg2));
+    color: var(--accent);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 9999;
-    font-family: Arial, sans-serif;
-    color: white;
-    text-align: center;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
     opacity: 0;
     animation: fadeIn 0.5s var(--animation-ease) forwards;
 }
 
+#mobile-overlay * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 .overlay-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 90%;
+    background: var(--bg-panel);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
 }
 
 .logo {
-    font-size: 2.5em;
+    font-size: 4rem;
     font-weight: bold;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 2rem;
+    text-align: center;
+    background: var(--accent);
+    background-size: 200% auto;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+    position: relative;
+}
+
+.logo::after {
+    content: "✨";
+    position: absolute;
+    top: -10px;
+    right: -30px;
+    font-size: 2rem;
+    animation: sparkle 2s infinite alternate;
 }
 
 .message {
-    font-size: 1.2em;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
     line-height: 1.5;
-    margin-bottom: 30px;
+    width: 80%;
+    max-width: 500px;
 }
 
 .contact {
-    font-size: 0.9em;
-    opacity: 0.8;
+    font-size: 0.9rem;
+    opacity: 0.7;
+    text-align: center;
+    animation: fadeInOut 2s infinite alternate;
 }
 
 @media (pointer: coarse) {
@@ -858,14 +851,19 @@ textarea::placeholder {
     }
 }
 
-/* Added global hover effect for interactive elements */
 button:hover,
 input[type="range"]:hover,
 .toggle-slider:hover {
     filter: brightness(1.1);
 }
 
-/* Стили для прелоадера */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
 #preloader {
     position: fixed;
     top: 0;
@@ -896,9 +894,8 @@ input[type="range"]:hover,
     justify-content: center;
     width: 100%;
     height: 100%;
-    gap: 1rem; /* ✅ добавляем отступы между элементами */
+    gap: 1rem;
 }
-
 
 .preloader-logo {
     font-size: 4rem;
@@ -992,7 +989,6 @@ input[type="range"]:hover,
         opacity: 0.5;
         transform: scale(0.8);
     }
-
     to {
         opacity: 1;
         transform: scale(1.2);
@@ -1003,13 +999,11 @@ input[type="range"]:hover,
     from {
         opacity: 0.4;
     }
-
     to {
         opacity: 0.8;
     }
 }
 
-/* Скрыть основное содержимое до загрузки */
 .main-content {
     opacity: 0;
     transition: opacity 0.5s ease;
