@@ -796,7 +796,7 @@
 
     // ========== MULTILANGUAGE SYSTEM ==========
     const LANGUAGE_STORAGE_KEY = "texticles-language";
-    let currentLanguage = 'ru';
+    let currentLanguage = 'en';
     let translations = {};
 
     // Загрузка переводов из JSON файла

@@ -70,5 +70,10 @@
   "footer": "Drag particles! • Supports emoji<br>© All rights reserved Texticles 2025",
   "mobile_title": "✨ Texticles",
   "mobile_message_1": "Version for your device is in development",
-  "mobile_message_2": "For full access to site features<br>please use a device with a mouse"
+  "mobile_message_2": "For full access to site features<br>please use a device with a mouse",
+  "loading-text-1": "Generating particles",
+  "loading-text-2": "Optimizing for your device",
+  "loading-text-3": "Preaparing for you",
+  "loading-text-4": "Finishing",
+  "skip-text": "Press ESC to skip loading"
 }

@@ -316,10 +316,13 @@ h2 {
     font-size: 24px;
     font-weight: 700;
     letter-spacing: -0.5px;
-    color: var(--accent);
+    background: var(--accent);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    /* Added subtle shadow */
 }
+
 
 .section-title {
     font-size: 16px;
