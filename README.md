@@ -26,7 +26,7 @@ Check out the live demo: [Texticles](https://abesanets.github.io/Texticles/)
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/Texticles.git
+git clone https://github.com/abesanets/Texticles.git
 cd Texticles
 ```
 Open index.html in your browser — no build steps required.
