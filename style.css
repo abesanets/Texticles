@@ -1012,3 +1012,39 @@ input[type="range"]:hover,
 .main-content.loaded {
     opacity: 1;
 }
+
+#errorDisplay {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(0);
+  background-color: rgba(255, 0, 0, 0.9);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  display: none;
+  max-width: 80%;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  opacity: 0;
+  font-family: system-ui, sans-serif;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+/* Когда виден */
+#errorDisplay.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(10px);
+}
+
+/* Анимация встряхивания */
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%) translateY(10px); }
+  20%, 60% { transform: translateX(calc(-50% - 8px)) translateY(10px); }
+  40%, 80% { transform: translateX(calc(-50% + 8px)) translateY(10px); }
+}
+
+#errorDisplay.shake {
+  animation: shake 0.4s ease;
+}
