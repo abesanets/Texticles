@@ -255,7 +255,7 @@
                     preloader.style.opacity = '0';
                     preloader.style.visibility = 'hidden';
 
-                    mainContent.classList.add('loaded');                    
+                    mainContent.classList.add('loaded');
                 }, 500);
             }
 
@@ -1053,14 +1053,27 @@
 
     function restoreSettings() {
         try {
+            const defaults = {
+                density: 2,
+                size: 8,
+                speed: 0.15,
+                interaction: 1.5,
+                themeSelect: "cotton-candy",
+            };
             const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
             controls.forEach(el => {
                 const id = el.id;
-                if (!id || savedData[id] === undefined) return;
+                if (!id) return;
+
+                const value = savedData[id] !== undefined ? savedData[id] : defaults[id];
+
                 if (el.type === "checkbox") {
-                    el.checked = savedData[id];
-                } else {
-                    el.value = savedData[id];
+                    el.checked = value;
+                } else if (value !== undefined) {
+                    el.value = value;
+                    // Обновляем отображение рядом с ползунком
+                    const display = document.getElementById(id + "Value");
+                    if (display) display.textContent = value;
                 }
                 if (id === "themeSelect") {
                     document.body.dataset.theme = el.value;
