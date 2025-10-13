@@ -1,5 +1,5 @@
 (() => {
-    // ========== КОНФИГУРАЦИЯ И ИНИЦИАЛИЗАЦИЯ ==========
+    // ========== CONFIGURATION AND INITIALIZATION ==========
     const CONFIG = {
         MAX_PARTICLES: 25000,
         DPR_LIMIT: 1.5,
@@ -11,7 +11,7 @@
         }
     };
 
-    // ========== DOM ЭЛЕМЕНТЫ ==========
+    // ========== DOM ELEMENTS ==========
     const elements = {
         canvas: document.getElementById('c'),
         wrap: document.getElementById('stage'),
@@ -41,52 +41,48 @@
         particleCountOverlay: document.getElementById('particleCountOverlay')
     };
 
-    // Создаём элемент для ошибок
+    // Error display system
     const errorDisplay = document.createElement('div');
     errorDisplay.id = 'errorDisplay';
     document.body.appendChild(errorDisplay);
 
     function showError(message) {
+        console.error(message);
         errorDisplay.textContent = message;
         errorDisplay.style.display = 'block';
 
-        // Активируем плавное появление
         requestAnimationFrame(() => errorDisplay.classList.add('visible'));
-
-        // Добавляем встряхивание
         errorDisplay.classList.remove('shake');
-        void errorDisplay.offsetWidth; // сбрасывает анимацию
+        void errorDisplay.offsetWidth;
         errorDisplay.classList.add('shake');
 
-        // Плавное исчезновение через 5 секунд
         setTimeout(() => {
             errorDisplay.classList.remove('visible');
             setTimeout(() => errorDisplay.style.display = 'none', 400);
         }, 5000);
     }
 
-
-    // Проверки на наличие элементов
+    // Early validation
     if (!elements.canvas) {
         showError('Canvas element not found!');
-        return; // Прерываем инициализацию
+        return;
     }
 
     const ctx = elements.canvas.getContext('2d', { alpha: true });
-
     if (!ctx) {
         showError('Failed to get 2D context!');
         return;
     }
 
+    // Offscreen canvas for text rendering
     const offscreen = {
         canvas: document.createElement('canvas'),
         ctx: null
     };
     offscreen.ctx = offscreen.canvas.getContext('2d', { willReadFrequently: true });
 
-    // ========== СОСТОЯНИЕ ПРИЛОЖЕНИЯ ==========
-    let state = {
+    // ========== APPLICATION STATE ==========
+    const state = {
         W: 0, H: 0,
         DPR: Math.min(window.devicePixelRatio || 1, CONFIG.DPR_LIMIT),
         center: { x: 0, y: 0 },
@@ -102,12 +98,13 @@
         fps: 60
     };
 
-    // ========== FULLSCREEN ЛОГИКА ==========
+    // ========== FULLSCREEN MANAGER ==========
     const FullscreenManager = {
         isActive() {
             return !!(document.fullscreenElement || document.webkitFullscreenElement ||
                 document.msFullscreenElement || state.isManualFullscreen);
         },
+        
         enter() {
             try {
                 const el = elements.wrap;
@@ -120,9 +117,10 @@
                     this.handleResize();
                 }
             } catch (err) {
-                showError(`Fullscreen enter error: ${err.message}`);
+                showError(`Fullscreen error: ${err.message}`);
             }
         },
+        
         exit() {
             try {
                 if (document.exitFullscreen) document.exitFullscreen();
@@ -134,15 +132,18 @@
                     this.handleResize();
                 }
             } catch (err) {
-                showError(`Fullscreen exit error: ${err.message}`);
+                showError(`Fullscreen error: ${err.message}`);
             }
         },
+        
         toggle() {
             this.isActive() ? this.exit() : this.enter();
         },
+        
         handleChange() {
             const isActive = !!(document.fullscreenElement || document.webkitFullscreenElement ||
                 document.msFullscreenElement);
+                
             if (isActive) {
                 document.body.setAttribute('data-fullscreen', 'true');
                 state.isManualFullscreen = false;
@@ -150,15 +151,17 @@
                 document.body.removeAttribute('data-fullscreen');
                 state.isManualFullscreen = false;
             }
+            
             elements.wrap.classList.toggle('fullscreen', this.isActive());
             setTimeout(() => this.handleResize(), 60);
         },
+        
         handleResize() {
             resize();
         }
     };
 
-    // ========== СИСТЕМА ПРЕЛОАДЕРА ==========
+    // ========== PRELOADER SYSTEM ==========
     const LOADING_CONFIG = {
         initialDelay: 500,
         pauseProbability: 0.3,
@@ -174,426 +177,330 @@
     let timeoutId = null;
 
     function initPreloader() {
-        try {
-            const preloader = document.getElementById('preloader');
-            const progressBar = document.querySelector('.progress-bar');
-            const textItems = document.querySelectorAll('.text-item');
-            const mainContent = document.querySelector('.main-content');
+        const preloader = document.getElementById('preloader');
+        const progressBar = document.querySelector('.progress-bar');
+        const textItems = document.querySelectorAll('.text-item');
+        const mainContent = document.querySelector('.main-content');
 
-            if (!preloader || !progressBar || textItems.length === 0 || !mainContent) {
-                throw new Error('Preloader elements not found');
-            }
+        if (!preloader || !progressBar || textItems.length === 0 || !mainContent) {
+            showError('Preloader elements not found');
+            return;
+        }
 
-            function updateProgress() {
-                if (skipRequested) {
-                    progress = 100;
-                    progressBar.style.width = progress + '%';
-                    completeLoading();
-                    return;
-                }
-
-                const shouldPause = Math.random() < LOADING_CONFIG.pauseProbability;
-                if (shouldPause) {
-                    const pauseTime = Math.random() *
-                        (LOADING_CONFIG.pauseDuration.max - LOADING_CONFIG.pauseDuration.min) +
-                        LOADING_CONFIG.pauseDuration.min;
-
-                    timeoutId = setTimeout(updateProgress, pauseTime);
-                    return;
-                }
-
-                const increment = Math.random() *
-                    (LOADING_CONFIG.progressStep.max - LOADING_CONFIG.progressStep.min) +
-                    LOADING_CONFIG.progressStep.min;
-
-                progress += increment;
-                if (progress > 100) progress = 100;
-
+        function updateProgress() {
+            if (skipRequested) {
+                progress = 100;
                 progressBar.style.width = progress + '%';
-
-                if (progress >= LOADING_CONFIG.textChangePoints[0] && currentTextIndex === 0) {
-                    changeText(1);
-                } else if (progress >= LOADING_CONFIG.textChangePoints[1] && currentTextIndex === 1) {
-                    changeText(2);
-                } else if (progress >= LOADING_CONFIG.textChangePoints[2] && currentTextIndex === 2) {
-                    changeText(3);
-                }
-
-                if (progress >= 100) {
-                    completeLoading();
-                    return;
-                }
-
-                const nextUpdate = Math.random() *
-                    (LOADING_CONFIG.updateInterval.max - LOADING_CONFIG.updateInterval.min) +
-                    LOADING_CONFIG.updateInterval.min;
-
-                timeoutId = setTimeout(updateProgress, nextUpdate);
+                completeLoading();
+                return;
             }
 
-            function changeText(index) {
-                if (index < textItems.length) {
-                    textItems[currentTextIndex].classList.add('leaving');
-                    setTimeout(() => {
-                        textItems[currentTextIndex].classList.remove('active', 'leaving');
-                        currentTextIndex = index;
-                        textItems[currentTextIndex].classList.add('active');
-                    }, 500);
-                }
+            if (Math.random() < LOADING_CONFIG.pauseProbability) {
+                const pauseTime = Math.random() *
+                    (LOADING_CONFIG.pauseDuration.max - LOADING_CONFIG.pauseDuration.min) +
+                    LOADING_CONFIG.pauseDuration.min;
+
+                timeoutId = setTimeout(updateProgress, pauseTime);
+                return;
             }
 
-            function completeLoading() {
-                if (timeoutId) {
-                    clearTimeout(timeoutId);
-                }
+            const increment = Math.random() *
+                (LOADING_CONFIG.progressStep.max - LOADING_CONFIG.progressStep.min) +
+                LOADING_CONFIG.progressStep.min;
 
-                if (currentTextIndex !== 3) {
-                    changeText(3);
-                }
+            progress = Math.min(100, progress + increment);
+            progressBar.style.width = progress + '%';
 
+            // Text changes
+            if (progress >= LOADING_CONFIG.textChangePoints[0] && currentTextIndex === 0) {
+                changeText(1);
+            } else if (progress >= LOADING_CONFIG.textChangePoints[1] && currentTextIndex === 1) {
+                changeText(2);
+            } else if (progress >= LOADING_CONFIG.textChangePoints[2] && currentTextIndex === 2) {
+                changeText(3);
+            }
+
+            if (progress >= 100) {
+                completeLoading();
+                return;
+            }
+
+            const nextUpdate = Math.random() *
+                (LOADING_CONFIG.updateInterval.max - LOADING_CONFIG.updateInterval.min) +
+                LOADING_CONFIG.updateInterval.min;
+
+            timeoutId = setTimeout(updateProgress, nextUpdate);
+        }
+
+        function changeText(index) {
+            if (index < textItems.length) {
+                textItems[currentTextIndex].classList.add('leaving');
                 setTimeout(() => {
-                    preloader.style.opacity = '0';
-                    preloader.style.visibility = 'hidden';
-
-                    mainContent.classList.add('loaded');
+                    textItems[currentTextIndex].classList.remove('active', 'leaving');
+                    currentTextIndex = index;
+                    textItems[currentTextIndex].classList.add('active');
                 }, 500);
             }
-
-            // Запуск прогресса
-            timeoutId = setTimeout(updateProgress, LOADING_CONFIG.initialDelay);
-
-            // Обработка нажатия ESC
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && !skipRequested) {
-                    skipRequested = true;
-                    if (timeoutId) {
-                        clearTimeout(timeoutId);
-                    }
-                    updateProgress();
-                }
-            });
-        } catch (err) {
-            showError(`Preloader error: ${err.message}`);
         }
+
+        function completeLoading() {
+            clearTimeout(timeoutId);
+            
+            if (currentTextIndex !== 3) {
+                changeText(3);
+            }
+
+            setTimeout(() => {
+                preloader.style.opacity = '0';
+                preloader.style.visibility = 'hidden';
+                mainContent.classList.add('loaded');
+            }, 500);
+        }
+
+        timeoutId = setTimeout(updateProgress, LOADING_CONFIG.initialDelay);
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !skipRequested) {
+                skipRequested = true;
+                clearTimeout(timeoutId);
+                updateProgress();
+            }
+        });
     }
 
-    // Запускаем прелоадер при загрузке страницы
-    document.addEventListener('DOMContentLoaded', initPreloader);
-
-    // ========== ИНИЦИАЛИЗАЦИЯ СЛАЙДЕРОВ И ПРЕСЕТОВ ==========
+    // ========== SLIDERS AND PRESETS ==========
     function initSliders() {
-        try {
-            const sliders = [elements.density, elements.size, elements.speed, elements.interaction];
-            sliders.forEach(slider => {
-                if (slider) {
-                    slider.addEventListener('input', updateSliderValues);
-                }
-            });
-            updateSliderValues();
-        } catch (err) {
-            showError(`Sliders init error: ${err.message}`);
-        }
+        const sliders = [elements.density, elements.size, elements.speed, elements.interaction];
+        sliders.forEach(slider => {
+            slider?.addEventListener('input', updateSliderValues);
+        });
+        updateSliderValues();
     }
 
     function updateSliderValues() {
-        try {
-            elements.densityValue.textContent = elements.density.value;
-            elements.sizeValue.textContent = elements.size.value;
-            elements.speedValue.textContent = elements.speed.value;
-            elements.interactionValue.textContent = elements.interaction.value;
-        } catch (err) {
-            showError(`Update sliders error: ${err.message}`);
-        }
-    }
-
-    function triggerInputEvent(slider) {
-        try {
-            const event = new Event('input', { bubbles: true });
-            slider.dispatchEvent(event);
-        } catch (err) {
-            showError(`Trigger event error: ${err.message}`);
-        }
+        elements.densityValue.textContent = elements.density.value;
+        elements.sizeValue.textContent = elements.size.value;
+        elements.speedValue.textContent = elements.speed.value;
+        elements.interactionValue.textContent = elements.interaction.value;
     }
 
     function initPresets() {
-        try {
-            const presetButtons = document.querySelectorAll('.preset-btn');
-            presetButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    elements.density.value = btn.dataset.density;
-                    elements.size.value = btn.dataset.size;
-                    elements.speed.value = btn.dataset.speed;
-                    elements.interaction.value = btn.dataset.interaction;
-                    triggerInputEvent(elements.density);
-                    triggerInputEvent(elements.size);
-                    triggerInputEvent(elements.speed);
-                    triggerInputEvent(elements.interaction);
+        const presetButtons = document.querySelectorAll('.preset-btn');
+        presetButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                elements.density.value = btn.dataset.density;
+                elements.size.value = btn.dataset.size;
+                elements.speed.value = btn.dataset.speed;
+                elements.interaction.value = btn.dataset.interaction;
+                
+                [elements.density, elements.size, elements.speed, elements.interaction].forEach(slider => {
+                    slider.dispatchEvent(new Event('input', { bubbles: true }));
                 });
             });
-        } catch (err) {
-            showError(`Presets init error: ${err.message}`);
-        }
+        });
     }
 
-    // ========== УПРАВЛЕНИЕ ЭМОДЗИ И ТЕКСТОМ ==========
+    // ========== EMOJI AND TEXT MANAGEMENT ==========
     function updateEmojiPreview() {
-        try {
-            const text = elements.txt.value;
-            const emojis = text.match(/\p{Emoji}/gu) || [];
-            elements.emojiPreview.textContent = emojis.slice(0, 10).join(' ') + (emojis.length > 10 ? '...' : '');
-        } catch (err) {
-            showError(`Emoji preview error: ${err.message}`);
-        }
+        const text = elements.txt.value;
+        const emojis = text.match(/\p{Emoji}/gu) || [];
+        elements.emojiPreview.textContent = emojis.slice(0, 10).join(' ') + (emojis.length > 10 ? '...' : '');
     }
 
     function setText(txt) {
-        try {
-            elements.txt.value = txt;
-            updateEmojiPreview();
-            rebuildText();
-        } catch (err) {
-            showError(`Set text error: ${err.message}`);
-        }
+        elements.txt.value = txt;
+        updateEmojiPreview();
+        rebuildText();
     }
 
-    // ========== РАБОТА С РАЗМЕРАМИ ==========
+    // ========== RESIZE MANAGEMENT ==========
     function resize() {
-        try {
-            const isFullscreen = FullscreenManager.isActive();
-            state.W = isFullscreen ? window.innerWidth : elements.wrap.clientWidth;
-            state.H = isFullscreen ? window.innerHeight : elements.wrap.clientHeight;
+        const isFullscreen = FullscreenManager.isActive();
+        state.W = isFullscreen ? window.innerWidth : elements.wrap.clientWidth;
+        state.H = isFullscreen ? window.innerHeight : elements.wrap.clientHeight;
 
-            elements.canvas.width = Math.max(1, Math.floor(state.W * state.DPR));
-            elements.canvas.height = Math.max(1, Math.floor(state.H * state.DPR));
-            elements.canvas.style.width = state.W + 'px';
-            elements.canvas.style.height = state.H + 'px';
+        elements.canvas.width = Math.max(1, Math.floor(state.W * state.DPR));
+        elements.canvas.height = Math.max(1, Math.floor(state.H * state.DPR));
+        elements.canvas.style.width = state.W + 'px';
+        elements.canvas.style.height = state.H + 'px';
 
-            ctx.setTransform(state.DPR, 0, 0, state.DPR, 0, 0);
-            state.center = { x: state.W / 2, y: state.H / 2 };
+        ctx.setTransform(state.DPR, 0, 0, state.DPR, 0, 0);
+        state.center = { x: state.W / 2, y: state.H / 2 };
 
-            rebuildText();
-        } catch (err) {
-            showError(`Resize error: ${err.message}`);
-        }
+        rebuildText();
     }
 
-    // ========== СИСТЕМА ЧАСТИЦ ==========
+    // ========== PARTICLE SYSTEM ==========
     function createParticle(scattered = false) {
-        try {
-            const size = parseFloat(elements.size.value);
-            return {
-                x: state.center.x + (Math.random() - 0.5) * state.W * (scattered ? 1.6 : 0.1),
-                y: state.center.y + (Math.random() - 0.5) * state.H * (scattered ? 1.6 : 0.1),
-                vx: (Math.random() - 0.5) * 3,
-                vy: (Math.random() - 0.5) * 3,
-                tx: state.center.x,
-                ty: state.center.y,
-                size: size,
-                baseSize: size,
-                hue: Math.random() * 360,
-                useCustomColor: false,
-                color: '',
-                life: Math.random() * 100,
-                speed: 0.5 + Math.random() * 0.5,
-                energy: 0, // Добавлено для pulse режима
-                neural: false, // Для neural
-                neuralConnections: [], // Для neural
-                symmetry: false, // Для symmetry
-                chaos: false // Для chaos
-            };
-        } catch (err) {
-            showError(`Create particle error: ${err.message}`);
-            return null;
-        }
+        const size = parseFloat(elements.size.value);
+        return {
+            x: state.center.x + (Math.random() - 0.5) * state.W * (scattered ? 1.6 : 0.1),
+            y: state.center.y + (Math.random() - 0.5) * state.H * (scattered ? 1.6 : 0.1),
+            vx: (Math.random() - 0.5) * 3,
+            vy: (Math.random() - 0.5) * 3,
+            tx: state.center.x,
+            ty: state.center.y,
+            size: size,
+            baseSize: size,
+            hue: Math.random() * 360,
+            useCustomColor: false,
+            color: '',
+            life: Math.random() * 100,
+            speed: 0.5 + Math.random() * 0.5,
+            energy: 0,
+            neural: false,
+            neuralConnections: [],
+            symmetry: false,
+            chaos: false
+        };
     }
 
     function scatterParticles() {
-        try {
-            state.particles.forEach(p => {
-                p.x = state.center.x + (Math.random() - 0.5) * state.W * 1.6;
-                p.y = state.center.y + (Math.random() - 0.5) * state.H * 1.6;
-                p.vx = (Math.random() - 0.5) * 6;
-                p.vy = (Math.random() - 0.5) * 6;
-                p.life = Math.random() * 100;
-            });
-        } catch (err) {
-            showError(`Scatter particles error: ${err.message}`);
-        }
+        state.particles.forEach(p => {
+            p.x = state.center.x + (Math.random() - 0.5) * state.W * 1.6;
+            p.y = state.center.y + (Math.random() - 0.5) * state.H * 1.6;
+            p.vx = (Math.random() - 0.5) * 6;
+            p.vy = (Math.random() - 0.5) * 6;
+            p.life = Math.random() * 100;
+        });
     }
 
-    // ========== РЕНДЕРИНГ ТЕКСТА И ЦВЕТОВ ==========
+    // ========== TEXT RENDERING AND COLORS ==========
     function calculateOptimalFontSize(lines) {
-        try {
-            return Math.min(
-                state.W / Math.max(...lines.map(l => l.length)) * 2,
-                state.H / (lines.length * 0.7)
-            );
-        } catch (err) {
-            showError(`Calculate font size error: ${err.message}`);
-            return 100; // fallback
-        }
+        return Math.min(
+            state.W / Math.max(...lines.map(l => l.length)) * 2,
+            state.H / (lines.length * 0.7)
+        );
     }
 
     function setupOffscreenCanvas(fontSize, lines) {
-        try {
-            offscreen.canvas.width = Math.max(400, Math.floor(state.W * 0.95));
-            offscreen.canvas.height = Math.max(200, Math.floor(state.H * 0.85));
+        offscreen.canvas.width = Math.max(400, Math.floor(state.W * 0.95));
+        offscreen.canvas.height = Math.max(200, Math.floor(state.H * 0.85));
 
-            offscreen.ctx.clearRect(0, 0, offscreen.canvas.width, offscreen.canvas.height);
-            offscreen.ctx.fillStyle = '#000000';
-            offscreen.ctx.fillRect(0, 0, offscreen.canvas.width, offscreen.canvas.height);
-            offscreen.ctx.fillStyle = '#ffffff';
-            offscreen.ctx.textAlign = 'center';
-            offscreen.ctx.textBaseline = 'middle';
-            offscreen.ctx.font = `bold ${fontSize}px system-ui, Arial`;
+        offscreen.ctx.clearRect(0, 0, offscreen.canvas.width, offscreen.canvas.height);
+        offscreen.ctx.fillStyle = '#000000';
+        offscreen.ctx.fillRect(0, 0, offscreen.canvas.width, offscreen.canvas.height);
+        offscreen.ctx.fillStyle = '#ffffff';
+        offscreen.ctx.textAlign = 'center';
+        offscreen.ctx.textBaseline = 'middle';
+        offscreen.ctx.font = `bold ${fontSize}px system-ui, Arial`;
 
-            const totalHeight = fontSize * lines.length * 0.9;
-            const startY = offscreen.canvas.height / 2 - totalHeight / 2 + fontSize / 2;
+        const totalHeight = fontSize * lines.length * 0.9;
+        const startY = offscreen.canvas.height / 2 - totalHeight / 2 + fontSize / 2;
 
-            lines.forEach((line, i) => {
-                offscreen.ctx.fillText(line, offscreen.canvas.width / 2, startY + i * fontSize * 0.9);
-            });
-        } catch (err) {
-            showError(`Setup offscreen canvas error: ${err.message}`);
-        }
+        lines.forEach((line, i) => {
+            offscreen.ctx.fillText(line, offscreen.canvas.width / 2, startY + i * fontSize * 0.9);
+        });
     }
 
     function buildTextPixels(text) {
-        try {
-            const lines = text.split(/\n+/).filter(l => l.trim().length);
-            if (!lines.length) return [];
+        const lines = text.split(/\n+/).filter(l => l.trim().length);
+        if (!lines.length) return [];
 
-            const fontSize = calculateOptimalFontSize(lines);
-            setupOffscreenCanvas(fontSize, lines);
+        const fontSize = calculateOptimalFontSize(lines);
+        setupOffscreenCanvas(fontSize, lines);
 
-            const img = offscreen.ctx.getImageData(0, 0, offscreen.canvas.width, offscreen.canvas.height).data;
-            const points = [];
-            const gap = 3;
+        const img = offscreen.ctx.getImageData(0, 0, offscreen.canvas.width, offscreen.canvas.height).data;
+        const points = [];
+        const gap = 3;
 
-            for (let y = 0; y < offscreen.canvas.height; y += gap) {
-                for (let x = 0; x < offscreen.canvas.width; x += gap) {
-                    const idx = (y * offscreen.canvas.width + x) * 4;
-                    const brightness = (img[idx] + img[idx + 1] + img[idx + 2]) / 3;
-                    if (brightness > 50) {
-                        points.push({
-                            x: x - offscreen.canvas.width / 2 + state.center.x,
-                            y: y - offscreen.canvas.height / 2 + state.center.y
-                        });
-                    }
+        for (let y = 0; y < offscreen.canvas.height; y += gap) {
+            for (let x = 0; x < offscreen.canvas.width; x += gap) {
+                const idx = (y * offscreen.canvas.width + x) * 4;
+                const brightness = (img[idx] + img[idx + 1] + img[idx + 2]) / 3;
+                if (brightness > 50) {
+                    points.push({
+                        x: x - offscreen.canvas.width / 2 + state.center.x,
+                        y: y - offscreen.canvas.height / 2 + state.center.y
+                    });
                 }
             }
-
-            return points;
-        } catch (err) {
-            showError(`Build text pixels error: ${err.message}`);
-            return [];
         }
+
+        return points;
     }
 
     function buildEmojiColorMap(text) {
-        try {
-            const lines = text.split(/\n+/).filter(l => l.trim().length);
-            if (!lines.length) return new Map();
+        const lines = text.split(/\n+/).filter(l => l.trim().length);
+        if (!lines.length) return new Map();
 
-            const fontSize = calculateOptimalFontSize(lines);
-            setupOffscreenCanvas(fontSize, lines);
+        const fontSize = calculateOptimalFontSize(lines);
+        setupOffscreenCanvas(fontSize, lines);
 
-            const imageData = offscreen.ctx.getImageData(0, 0, offscreen.canvas.width, offscreen.canvas.height);
-            const colorMap = new Map();
-            const gap = 3;
+        const imageData = offscreen.ctx.getImageData(0, 0, offscreen.canvas.width, offscreen.canvas.height);
+        const colorMap = new Map();
+        const gap = 3;
 
-            for (let y = 0; y < offscreen.canvas.height; y += gap) {
-                for (let x = 0; x < offscreen.canvas.width; x += gap) {
-                    const idx = (y * offscreen.canvas.width + x) * 4;
-                    const a = imageData.data[idx + 3];
-                    if (a > 50) {
-                        const r = imageData.data[idx], g = imageData.data[idx + 1], b = imageData.data[idx + 2];
-                        colorMap.set(`${x},${y}`, `rgb(${r},${g},${b})`);
-                    }
+        for (let y = 0; y < offscreen.canvas.height; y += gap) {
+            for (let x = 0; x < offscreen.canvas.width; x += gap) {
+                const idx = (y * offscreen.canvas.width + x) * 4;
+                const a = imageData.data[idx + 3];
+                if (a > 50) {
+                    const r = imageData.data[idx], g = imageData.data[idx + 1], b = imageData.data[idx + 2];
+                    colorMap.set(`${x},${y}`, `rgb(${r},${g},${b})`);
                 }
             }
-
-            return colorMap;
-        } catch (err) {
-            showError(`Build emoji color map error: ${err.message}`);
-            return new Map();
         }
+
+        return colorMap;
     }
 
-    // ========== ОСНОВНАЯ ЛОГИКА ПРИЛОЖЕНИЯ ==========
+    // ========== CORE APPLICATION LOGIC ==========
     function rebuildText() {
-        try {
-            const text = '  ' + (elements.txt.value || '') + '  ';
-            state.targetPoints = buildTextPixels(text);
+        const text = '  ' + (elements.txt.value || '') + '  ';
+        state.targetPoints = buildTextPixels(text);
 
-            const density = parseFloat(elements.density.value);
-            const desiredCount = Math.min(
-                CONFIG.MAX_PARTICLES,
-                Math.max(100, Math.floor(state.targetPoints.length * density / 5))
-            );
+        const density = parseFloat(elements.density.value);
+        const desiredCount = Math.min(
+            CONFIG.MAX_PARTICLES,
+            Math.max(100, Math.floor(state.targetPoints.length * density / 5))
+        );
 
-            // Оптимизированное управление массивом частиц
-            const currentCount = state.particles.length;
-            if (currentCount < desiredCount) {
-                const needed = desiredCount - currentCount;
-                for (let i = 0; i < needed; i++) {
-                    const particle = createParticle(true);
-                    if (particle) {
-                        state.particles.push(particle);
-                    }
-                }
-            } else if (currentCount > desiredCount) {
-                state.particles.length = desiredCount;
+        // Optimized particle array management
+        const currentCount = state.particles.length;
+        if (currentCount < desiredCount) {
+            for (let i = 0; i < desiredCount - currentCount; i++) {
+                state.particles.push(createParticle(true));
             }
-
-            const emojiColors = elements.colorMode.value === 'emoji' ? buildEmojiColorMap(text) : new Map();
-            distributeParticles(emojiColors);
-
-            const count = state.particles.length;
-            const particleLabel = translations["overlay.particles"] || "Частиц";
-            elements.particleCount.textContent = `${particleLabel}: ${count}`;
-            if (elements.showParticleCount.checked) {
-                elements.particleCountOverlay.textContent = `${particleLabel}: ${count}`;
-            }
-        } catch (err) {
-            showError(`Rebuild text error: ${err.message}`);
+        } else if (currentCount > desiredCount) {
+            state.particles.length = desiredCount;
         }
+
+        const emojiColors = elements.colorMode.value === 'emoji' ? buildEmojiColorMap(text) : new Map();
+        distributeParticles(emojiColors);
+
+        updateParticleCountDisplay();
     }
 
     function distributeParticles(emojiColors) {
-        try {
-            const pointCount = state.targetPoints.length;
-            const colorMode = elements.colorMode.value;
-            const isEmoji = colorMode === 'emoji';
+        const pointCount = state.targetPoints.length;
+        const isEmoji = elements.colorMode.value === 'emoji';
 
-            state.particles.forEach((p, i) => {
-                const ptIdx = Math.floor(Math.random() * pointCount);
-                const pt = state.targetPoints[ptIdx];
-                p.tx = pt.x;
-                p.ty = pt.y;
+        state.particles.forEach((p, i) => {
+            const ptIdx = Math.floor(Math.random() * pointCount);
+            const pt = state.targetPoints[ptIdx];
+            p.tx = pt.x;
+            p.ty = pt.y;
 
-                if (isEmoji) {
-                    const offX = Math.round(pt.x - state.center.x + offscreen.canvas.width / 2);
-                    const offY = Math.round(pt.y - state.center.y + offscreen.canvas.height / 2);
-                    const colorKey = `${offX},${offY}`;
-                    if (emojiColors.has(colorKey)) {
-                        p.color = emojiColors.get(colorKey);
-                        p.useCustomColor = true;
-                    } else {
-                        p.useCustomColor = false;
-                        p.hue = Math.random() * 360;
-                    }
+            if (isEmoji) {
+                const offX = Math.round(pt.x - state.center.x + offscreen.canvas.width / 2);
+                const offY = Math.round(pt.y - state.center.y + offscreen.canvas.height / 2);
+                const colorKey = `${offX},${offY}`;
+                if (emojiColors.has(colorKey)) {
+                    p.color = emojiColors.get(colorKey);
+                    p.useCustomColor = true;
                 } else {
                     p.useCustomColor = false;
                     p.hue = Math.random() * 360;
                 }
-            });
-        } catch (err) {
-            showError(`Distribute particles error: ${err.message}`);
-        }
+            } else {
+                p.useCustomColor = false;
+                p.hue = Math.random() * 360;
+            }
+        });
     }
 
-    // ========== АНИМАЦИЯ И РЕНДЕРИНГ ==========
+    // ========== ANIMATION AND RENDERING ==========
     const mouseInteractionHandlers = {
         repel: (p, force, mdx, mdy, mdist) => {
             p.vx += (mdx / (mdist + 0.01)) * force;
@@ -627,7 +534,6 @@
         },
         neural: (p, force, mdx, mdy, mdist) => {
             p.neural = true;
-            p.neuralConnections = [];
             p.vx += (Math.sin(mdist * 0.1 + Date.now() * 0.002) - 0.5) * force * 0.5;
             p.vy += (Math.cos(mdist * 0.1 + Date.now() * 0.002) - 0.5) * force * 0.5;
             p.color = `hsl(${(mdist * 2) % 360}, 80%, 60%)`;
@@ -656,53 +562,44 @@
     };
 
     function handleMouseInteraction(p, mode, strength, dt, mouseX, mouseY) {
-        try {
-            const mdx = p.x - mouseX;
-            const mdy = p.y - mouseY;
-            const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
-            if (mdist < CONFIG.MOUSE_RADIUS) {
-                const push = 1 - mdist / CONFIG.MOUSE_RADIUS;
-                const force = 4 * push * dt * strength;
-                const handler = mouseInteractionHandlers[mode];
-                if (handler) {
-                    handler(p, force, mdx, mdy, mdist, mouseX, mouseY);
-                }
-            }
-        } catch (err) {
-            showError(`Mouse interaction error: ${err.message}`);
+        const mdx = p.x - mouseX;
+        const mdy = p.y - mouseY;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        
+        if (mdist < CONFIG.MOUSE_RADIUS) {
+            const push = 1 - mdist / CONFIG.MOUSE_RADIUS;
+            const force = 4 * push * dt * strength;
+            const handler = mouseInteractionHandlers[mode];
+            handler?.(p, force, mdx, mdy, mdist, mouseX, mouseY);
         }
     }
 
     function updateParticles(dt) {
-        try {
-            const spd = parseFloat(elements.speed.value);
-            const mMode = elements.mouseMode.value;
-            const interactionStr = parseFloat(elements.interaction.value);
-            const mouseX = state.mouse.x;
-            const mouseY = state.mouse.y;
-            const hasMouseInteraction = mMode !== 'none' && mouseX > -9990;
+        const spd = parseFloat(elements.speed.value);
+        const mMode = elements.mouseMode.value;
+        const interactionStr = parseFloat(elements.interaction.value);
+        const mouseX = state.mouse.x;
+        const mouseY = state.mouse.y;
+        const hasMouseInteraction = mMode !== 'none' && mouseX > -9990;
 
-            state.particles.forEach(p => {
-                const dx = p.tx - p.x;
-                const dy = p.ty - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                const speedFactor = p.speed * spd * dt * (0.5 + dist / 200);
+        state.particles.forEach(p => {
+            const dx = p.tx - p.x;
+            const dy = p.ty - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const speedFactor = p.speed * spd * dt * (0.5 + dist / 200);
 
-                p.vx += dx * 0.015 * speedFactor;
-                p.vy += dy * 0.015 * speedFactor;
+            p.vx += dx * 0.015 * speedFactor;
+            p.vy += dy * 0.015 * speedFactor;
 
-                if (hasMouseInteraction) {
-                    handleMouseInteraction(p, mMode, interactionStr, dt, mouseX, mouseY);
-                }
+            if (hasMouseInteraction) {
+                handleMouseInteraction(p, mMode, interactionStr, dt, mouseX, mouseY);
+            }
 
-                p.vx *= 0.92;
-                p.vy *= 0.92;
-                p.x += p.vx;
-                p.y += p.vy;
-            });
-        } catch (err) {
-            showError(`Update particles error: ${err.message}`);
-        }
+            p.vx *= 0.92;
+            p.vy *= 0.92;
+            p.x += p.vx;
+            p.y += p.vy;
+        });
     }
 
     const colorModeHandlers = {
@@ -749,205 +646,183 @@
     };
 
     function getParticleColor(p, i, colorMode, now) {
-        try {
-            const handler = colorModeHandlers[colorMode] || colorModeHandlers.default;
-            return handler(p, i, now);
-        } catch (err) {
-            showError(`Get particle color error: ${err.message}`);
-            return 'rgba(255, 255, 255, 0.9)'; // fallback
-        }
+        const handler = colorModeHandlers[colorMode] || colorModeHandlers.default;
+        return handler(p, i, now);
     }
 
     function renderParticles() {
-        try {
-            const colorMode = elements.colorMode.value;
-            const now = Date.now();
-            const drawRatio = CONFIG.PERFORMANCE.PARTICLE_DRAW_RATIO;
-            const trailChance = CONFIG.PERFORMANCE.TRAIL_CHANCE;
+        const colorMode = elements.colorMode.value;
+        const now = Date.now();
+        const drawRatio = CONFIG.PERFORMANCE.PARTICLE_DRAW_RATIO;
+        const trailChance = CONFIG.PERFORMANCE.TRAIL_CHANCE;
 
-            state.particles.forEach((p, i) => {
-                const particleColor = getParticleColor(p, i, colorMode, now);
-                ctx.fillStyle = particleColor;
+        state.particles.forEach((p, i) => {
+            const particleColor = getParticleColor(p, i, colorMode, now);
+            ctx.fillStyle = particleColor;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (i % drawRatio === 0 && Math.random() > trailChance) {
+                ctx.strokeStyle = particleColor.replace('0.9', '0.3').replace('0.8', '0.3');
+                ctx.lineWidth = Math.max(0.3, p.size * 0.15);
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-
-                if (i % drawRatio === 0 && Math.random() > trailChance) {
-                    ctx.strokeStyle = particleColor.replace('0.9', '0.3').replace('0.8', '0.3');
-                    ctx.lineWidth = Math.max(0.3, p.size * 0.15);
-                    ctx.beginPath();
-                    ctx.moveTo(p.x - p.vx * 2, p.y - p.vy * 2);
-                    ctx.lineTo(p.x, p.y);
-                    ctx.stroke();
-                }
-            });
-        } catch (err) {
-            showError(`Render particles error: ${err.message}`);
-        }
+                ctx.moveTo(p.x - p.vx * 2, p.y - p.vy * 2);
+                ctx.lineTo(p.x, p.y);
+                ctx.stroke();
+            }
+        });
     }
 
     function updateFPS(now) {
-        try {
-            state.frameCount++;
-            if (now - state.lastFpsUpdate >= 1000) {
-                state.fps = Math.round((state.frameCount * 1000) / (now - state.lastFpsUpdate));
-                elements.fps.textContent = `FPS: ${state.fps}`;
-                if (elements.showFps.checked) {
-                    elements.fpsOverlay.textContent = `FPS: ${state.fps}`;
-                }
-                state.frameCount = 0;
-                state.lastFpsUpdate = now;
+        state.frameCount++;
+        if (now - state.lastFpsUpdate >= 1000) {
+            state.fps = Math.round((state.frameCount * 1000) / (now - state.lastFpsUpdate));
+            elements.fps.textContent = `FPS: ${state.fps}`;
+            if (elements.showFps.checked) {
+                elements.fpsOverlay.textContent = `FPS: ${state.fps}`;
             }
-        } catch (err) {
-            showError(`Update FPS error: ${err.message}`);
+            state.frameCount = 0;
+            state.lastFpsUpdate = now;
         }
     }
 
     function tick(now) {
-        try {
-            const dt = Math.min(48, now - state.lastTime) / 16.666;
-            state.lastTime = now;
+        const dt = Math.min(48, now - state.lastTime) / 16.666;
+        state.lastTime = now;
 
-            updateFPS(now);
-            ctx.clearRect(0, 0, state.W, state.H);
-            updateParticles(dt);
-            renderParticles();
+        updateFPS(now);
+        ctx.clearRect(0, 0, state.W, state.H);
+        updateParticles(dt);
+        renderParticles();
 
-            requestAnimationFrame(tick);
-        } catch (err) {
-            showError(`Animation tick error: ${err.message}`);
-            // Продолжаем анимацию даже при ошибке
-            requestAnimationFrame(tick);
-        }
+        requestAnimationFrame(tick);
     }
 
-    // ========== ОБРАБОТЧИКИ СОБЫТИЙ ==========
+    // ========== EVENT HANDLERS ==========
     function handleMouseMove(e) {
-        try {
-            if (!state.mouseUpdateScheduled) {
-                state.mouseUpdateScheduled = true;
-                requestAnimationFrame(() => {
-                    const r = elements.canvas.getBoundingClientRect();
-                    state.mouse.px = state.mouse.x;
-                    state.mouse.py = state.mouse.y;
-                    state.mouse.x = e.clientX - r.left;
-                    state.mouse.y = e.clientY - r.top;
+        if (!state.mouseUpdateScheduled) {
+            state.mouseUpdateScheduled = true;
+            requestAnimationFrame(() => {
+                const r = elements.canvas.getBoundingClientRect();
+                state.mouse.px = state.mouse.x;
+                state.mouse.py = state.mouse.y;
+                state.mouse.x = e.clientX - r.left;
+                state.mouse.y = e.clientY - r.top;
 
-                    if (state.mouse.px > -9990) {
-                        state.mouse.vx = (state.mouse.x - state.mouse.px) * 0.5;
-                        state.mouse.vy = (state.mouse.y - state.mouse.py) * 0.5;
-                    }
-                    state.mouseUpdateScheduled = false;
-                });
-            }
-        } catch (err) {
-            showError(`Mouse move error: ${err.message}`);
+                if (state.mouse.px > -9990) {
+                    state.mouse.vx = (state.mouse.x - state.mouse.px) * 0.5;
+                    state.mouse.vy = (state.mouse.y - state.mouse.py) * 0.5;
+                }
+                state.mouseUpdateScheduled = false;
+            });
         }
     }
 
     function initEventListeners() {
-        try {
-            // Мышь на canvas
-            elements.canvas.addEventListener('mousemove', handleMouseMove);
-            elements.canvas.addEventListener('mouseleave', () => {
-                state.mouse.x = state.mouse.y = -9999;
-                state.mouse.vx = state.mouse.vy = 0;
+        // Mouse events
+        elements.canvas.addEventListener('mousemove', handleMouseMove);
+        elements.canvas.addEventListener('mouseleave', () => {
+            state.mouse.x = state.mouse.y = -9999;
+            state.mouse.vx = state.mouse.vy = 0;
+        });
+
+        // Custom cursor
+        const stage = document.getElementById('stage');
+        const cursor = document.getElementById('custom-cursor');
+        if (stage && cursor) {
+            stage.addEventListener('mouseenter', () => {
+                cursor.style.display = 'block';
+                stage.style.cursor = 'none';
             });
-
-            // Кастомный курсор на stage
-            const stage = document.getElementById('stage');
-            const cursor = document.getElementById('custom-cursor');
-            if (stage && cursor) {
-                stage.addEventListener('mouseenter', () => {
-                    cursor.style.display = 'block';
-                    stage.style.cursor = 'none';
-                });
-                stage.addEventListener('mouseleave', () => {
-                    cursor.style.display = 'none';
-                    stage.style.cursor = 'default';
-                });
-                stage.addEventListener('mousemove', e => {
-                    const rect = stage.getBoundingClientRect();
-                    cursor.style.left = (e.clientX - rect.left) + 'px';
-                    cursor.style.top = (e.clientY - rect.top) + 'px';
-                });
-            }
-
-            // Ресайз
-            window.addEventListener('resize', () => {
-                clearTimeout(state.resizeTimeout);
-                state.resizeTimeout = setTimeout(resize, CONFIG.RESIZE_DELAY);
+            stage.addEventListener('mouseleave', () => {
+                cursor.style.display = 'none';
+                stage.style.cursor = 'default';
             });
-
-            // Управление
-            elements.apply.addEventListener('click', () => setText(elements.txt.value || ''));
-            elements.shuffle.addEventListener('click', scatterParticles);
-            elements.themeSelect.addEventListener('change', () => {
-                document.body.setAttribute('data-theme', elements.themeSelect.value);
-                updateOverlayControls();
+            stage.addEventListener('mousemove', e => {
+                const rect = stage.getBoundingClientRect();
+                cursor.style.left = (e.clientX - rect.left) + 'px';
+                cursor.style.top = (e.clientY - rect.top) + 'px';
             });
+        }
 
-            // Размер частиц
-            elements.size.addEventListener('input', () => {
-                const newSize = parseFloat(elements.size.value);
-                state.particles.forEach(p => {
-                    p.baseSize = p.size = newSize;
-                });
-                updateSliderValues();
+        // Resize
+        window.addEventListener('resize', () => {
+            clearTimeout(state.resizeTimeout);
+            state.resizeTimeout = setTimeout(resize, CONFIG.RESIZE_DELAY);
+        });
+
+        // Controls
+        elements.apply.addEventListener('click', () => setText(elements.txt.value || ''));
+        elements.shuffle.addEventListener('click', scatterParticles);
+        elements.themeSelect.addEventListener('change', () => {
+            document.body.setAttribute('data-theme', elements.themeSelect.value);
+            updateOverlayControls();
+        });
+
+        // Particle size
+        elements.size.addEventListener('input', () => {
+            const newSize = parseFloat(elements.size.value);
+            state.particles.forEach(p => {
+                p.baseSize = p.size = newSize;
             });
+            updateSliderValues();
+        });
 
-            // Fullscreen
-            elements.fsBtn.addEventListener('click', e => {
+        // Fullscreen
+        elements.fsBtn.addEventListener('click', e => {
+            e.preventDefault();
+            FullscreenManager.toggle();
+        });
+        elements.fsBtn.addEventListener('mousedown', e => e.preventDefault());
+
+        // Hotkeys
+        document.addEventListener('keydown', e => {
+            const active = document.activeElement;
+            const isTyping = active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT" || active.tagName === "SELECT");
+            if (!isTyping && e.code === "KeyF") {
                 e.preventDefault();
                 FullscreenManager.toggle();
-            });
-            elements.fsBtn.addEventListener('mousedown', e => e.preventDefault());
+            }
+        });
 
-            // Горячие клавиши
-            document.addEventListener('keydown', e => {
-                const active = document.activeElement;
-                const isTyping = active && (active.tagName === "TEXTAREA" || active.tagName === "INPUT" || active.tagName === "SELECT");
-                if (!isTyping && e.code === "KeyF") {
-                    e.preventDefault();
-                    FullscreenManager.toggle();
-                }
-            });
+        // Fullscreen events
+        ['fullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'].forEach(event => {
+            document.addEventListener(event, () => FullscreenManager.handleChange());
+        });
 
-            // Fullscreen события
-            ['fullscreenchange', 'webkitfullscreenchange', 'msfullscreenchange'].forEach(event => {
-                document.addEventListener(event, () => FullscreenManager.handleChange());
-            });
+        // Overlays
+        elements.showFps.addEventListener('change', updateOverlayControls);
+        elements.showParticleCount.addEventListener('change', updateOverlayControls);
 
-            // Оверлеи
-            elements.showFps.addEventListener('change', updateOverlayControls);
-            elements.showParticleCount.addEventListener('change', updateOverlayControls);
-
-            // Динамические параметры
-            elements.txt.addEventListener('input', updateEmojiPreview);
-            elements.density.addEventListener('input', rebuildText);
-            elements.colorMode.addEventListener('change', rebuildText);
-        } catch (err) {
-            showError(`Event listeners init error: ${err.message}`);
-        }
+        // Dynamic parameters
+        elements.txt.addEventListener('input', updateEmojiPreview);
+        elements.density.addEventListener('input', rebuildText);
+        elements.colorMode.addEventListener('change', rebuildText);
     }
 
     // ========== OVERLAY CONTROLS ==========
+    function updateParticleCountDisplay() {
+        const count = state.particles.length;
+        const particleLabel = translations["overlay.particles"] || "Particles";
+        elements.particleCount.textContent = `${particleLabel}: ${count}`;
+        if (elements.showParticleCount.checked) {
+            elements.particleCountOverlay.textContent = `${particleLabel}: ${count}`;
+        }
+    }
+
     function updateOverlayControls() {
-        try {
-            elements.fpsOverlay.classList.toggle('hidden', !elements.showFps.checked);
-            elements.particleCountOverlay.classList.toggle('hidden', !elements.showParticleCount.checked);
+        elements.fpsOverlay.classList.toggle('hidden', !elements.showFps.checked);
+        elements.particleCountOverlay.classList.toggle('hidden', !elements.showParticleCount.checked);
 
-            const fpsLabel = translations["overlay.fps"] || "FPS";
-            const particleLabel = translations["overlay.particles"] || "Частиц";
+        const fpsLabel = translations["overlay.fps"] || "FPS";
+        const particleLabel = translations["overlay.particles"] || "Particles";
 
-            if (elements.showFps.checked) {
-                elements.fpsOverlay.textContent = `${fpsLabel}: ${state.fps}`;
-            }
-            if (elements.showParticleCount.checked) {
-                elements.particleCountOverlay.textContent = `${particleLabel}: ${state.particles.length}`;
-            }
-        } catch (err) {
-            showError(`Update overlay controls error: ${err.message}`);
+        if (elements.showFps.checked) {
+            elements.fpsOverlay.textContent = `${fpsLabel}: ${state.fps}`;
+        }
+        if (elements.showParticleCount.checked) {
+            elements.particleCountOverlay.textContent = `${particleLabel}: ${state.particles.length}`;
         }
     }
 
@@ -956,181 +831,143 @@
     let currentLanguage = 'en';
     let translations = {};
 
-    // Загрузка переводов из JSON файла
     async function loadTranslations(lang) {
         try {
             const response = await fetch(`translations/${lang}.json`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             translations = await response.json();
             applyTranslations();
         } catch (error) {
-            showError(`Error loading translations for ${lang}: ${error.message}`);
+            showError(`Translation error: ${error.message}`);
         }
     }
 
-    // Применение переводов ко всем элементам с data-i18n
     function applyTranslations() {
-        try {
-            const elementsList = document.querySelectorAll('[data-i18n]');
-            elementsList.forEach(element => {
-                const key = element.getAttribute('data-i18n');
-                const text = translations[key];
-                if (!text) return;
+        const elementsList = document.querySelectorAll('[data-i18n]');
+        elementsList.forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            const text = translations[key];
+            if (!text) return;
 
-                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
-                    element.placeholder = text;
-                } else if (element.tagName === 'OPTION') {
-                    element.textContent = text;
-                } else {
-                    if (text.includes('<br>') || text.includes('<span') || text.includes('<b')) {
-                        element.innerHTML = text;
-                    } else {
-                        element.textContent = text;
-                    }
-                }
-            });
-
-            // 🔄 обновляем надписи FPS / Частиц
-            if (typeof updateOverlayControls === "function") {
-                updateOverlayControls();
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = text;
+            } else if (element.tagName === 'OPTION') {
+                element.textContent = text;
+            } else {
+                element.innerHTML = text.includes('<') ? text : text;
             }
-        } catch (err) {
-            showError(`Apply translations error: ${err.message}`);
-        }
+        });
+
+        updateOverlayControls();
     }
 
-
-    // Инициализация языка
     function initLanguage() {
-        try {
-            const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
-            if (savedLanguage) {
-                currentLanguage = savedLanguage;
-            }
-
-            const languageSelect = document.getElementById('languageSelect');
-            if (languageSelect) {
-                languageSelect.value = currentLanguage;
-                languageSelect.addEventListener('change', (e) => {
-                    currentLanguage = e.target.value;
-                    localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
-                    loadTranslations(currentLanguage);
-                });
-            }
-
-            loadTranslations(currentLanguage);
-        } catch (err) {
-            showError(`Init language error: ${err.message}`);
+        const savedLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY);
+        if (savedLanguage) {
+            currentLanguage = savedLanguage;
         }
-    }
 
+        const languageSelect = document.getElementById('languageSelect');
+        if (languageSelect) {
+            languageSelect.value = currentLanguage;
+            languageSelect.addEventListener('change', (e) => {
+                currentLanguage = e.target.value;
+                localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+                loadTranslations(currentLanguage);
+            });
+        }
+
+        loadTranslations(currentLanguage);
+    }
 
     // ========== LOCAL STORAGE ==========
     const STORAGE_KEY = "texticles-settings";
     const controls = document.querySelectorAll("input, textarea, select");
 
     function saveSettings() {
-        try {
-            const data = {};
-            controls.forEach(el => {
-                const id = el.id;
-                if (!id) return;
-                data[id] = el.type === "checkbox" ? el.checked : el.value;
-            });
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        const data = {};
+        controls.forEach(el => {
+            const id = el.id;
+            if (!id) return;
+            data[id] = el.type === "checkbox" ? el.checked : el.value;
+        });
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
-            const themeSelect = document.getElementById("themeSelect");
-            if (themeSelect) {
-                document.body.dataset.theme = themeSelect.value;
-            }
-            updateOverlayControls();
-        } catch (err) {
-            showError(`Save settings error: ${err.message}`);
+        const themeSelect = document.getElementById("themeSelect");
+        if (themeSelect) {
+            document.body.dataset.theme = themeSelect.value;
         }
+        updateOverlayControls();
     }
 
     function restoreSettings() {
-        try {
-            const defaults = {
-                density: 2,
-                size: 8,
-                speed: 0.15,
-                interaction: 1.5,
-                themeSelect: "cotton-candy",
-            };
-            const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-            controls.forEach(el => {
-                const id = el.id;
-                if (!id) return;
+        const defaults = {
+            density: 2,
+            size: 8,
+            speed: 0.15,
+            interaction: 1.5,
+            themeSelect: "minty-fresh",
+        };
+        const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        
+        controls.forEach(el => {
+            const id = el.id;
+            if (!id) return;
 
-                const value = savedData[id] !== undefined ? savedData[id] : defaults[id];
+            const value = savedData[id] !== undefined ? savedData[id] : defaults[id];
 
-                if (el.type === "checkbox") {
-                    el.checked = value;
-                } else if (value !== undefined) {
-                    el.value = value;
-                    // Обновляем отображение рядом с ползунком
-                    const display = document.getElementById(id + "Value");
-                    if (display) display.textContent = value;
-                }
-                if (id === "themeSelect") {
-                    document.body.dataset.theme = el.value;
-                }
-            });
-            updateOverlayControls();
-        } catch (err) {
-            showError(`Restore settings error: ${err.message}`);
-        }
+            if (el.type === "checkbox") {
+                el.checked = value;
+            } else if (value !== undefined) {
+                el.value = value;
+                const display = document.getElementById(id + "Value");
+                if (display) display.textContent = value;
+            }
+            if (id === "themeSelect") {
+                document.body.dataset.theme = el.value;
+            }
+        });
+        updateOverlayControls();
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    // ========== APPLICATION INITIALIZATION ==========
+    function init() {
+        // Create initial particles
+        for (let i = 0; i < 800; i++) {
+            state.particles.push(createParticle(true));
+        }
+
+        initSliders();
+        initPresets();
+        initEventListeners();
+        updateEmojiPreview();
+
+        resize();
+        setTimeout(() => {
+            rebuildText();
+            scatterParticles();
+            requestAnimationFrame(tick);
+        }, 100);
+        updateOverlayControls();
+    }
+
+    // Start everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+        initPreloader();
         restoreSettings();
         initLanguage();
+        
+        controls.forEach(el => {
+            el.addEventListener("input", saveSettings);
+            el.addEventListener("change", saveSettings);
+        });
+        
+        init();
     });
 
-    controls.forEach(el => {
-        el.addEventListener("input", saveSettings);
-        el.addEventListener("change", saveSettings);
-    });
-
+    // Global function for resetting settings
     window.resetSettings = () => {
-        try {
-            localStorage.removeItem(STORAGE_KEY);
-            location.reload();
-        } catch (err) {
-            showError(`Reset settings error: ${err.message}`);
-        }
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
     };
-
-
-    // ========== ИНИЦИАЛИЗАЦИЯ ПРИЛОЖЕНИЯ ==========
-    function init() {
-        try {
-            for (let i = 0; i < 800; i++) {
-                const particle = createParticle(true);
-                if (particle) {
-                    state.particles.push(particle);
-                }
-            }
-
-            initSliders();
-            initPresets();
-            initEventListeners();
-            updateEmojiPreview();
-
-            resize();
-            setTimeout(() => {
-                rebuildText();
-                scatterParticles();
-                requestAnimationFrame(tick);
-            }, 100);
-            updateOverlayControls();
-        } catch (err) {
-            showError(`App init error: ${err.message}`);
-        }
-    }
-
-    init();
 })();

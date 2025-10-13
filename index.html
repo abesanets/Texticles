@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
@@ -8,17 +8,17 @@
   <title>Texticles</title>
 
   <meta name="description"
-    content="Texticles (Текстиклс) — сайт с интерактивными частицами и эмодзи, созданный abesanets. Реакции на курсор, пресеты и плавные эффекты анимации.">
+    content="Texticles - interactive particles and emoji website created by abesanets. Mouse reactions, presets and smooth animation effects.">
   <meta name="keywords"
-    content="Texticles, Текстиклс, частицы, canvas, эмодзи, abesanets, анимация, JavaScript, эффекты, визуализация">
+    content="Texticles, particles, canvas, emoji, abesanets, animation, JavaScript, effects, visualization">
   <meta name="author" content="abesanets">
 
   <meta name="google-site-verification" content="KnADGmr-2eu4gzXt9_EPEIJdifX1si94MSgRokkwF2I" />
 
-  <!-- Open Graph (для соцсетей и поисковиков) -->
-  <meta property="og:title" content="Texticles (Текстиклс) — интерактивные частицы и эмодзи">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Texticles - Interactive Particles and Emoji">
   <meta property="og:description"
-    content="Интерактивный сайт с частицами и эмодзи, созданный abesanets. Реакции на курсор, эффекты, smooth-анимация.">
+    content="Interactive website with particles and emoji created by abesanets. Mouse reactions, effects, smooth animation.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://abesanets.github.io/Texticles/">
 
@@ -26,12 +26,12 @@
   <link rel="icon" href="https://abesanets.github.io/Texticles/favicon.ico" type="image/x-icon">
   <link rel="shortcut icon" href="https://abesanets.github.io/Texticles/favicon.ico" type="image/x-icon">
 
-  <!-- Стили -->
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body data-theme="cotton-candy">
-  <!-- Прелоадер -->
+<body data-theme="minty-fresh">
+  <!-- Preloader -->
   <div id="preloader">
     <div class="preloader-content">
       <div class="preloader-logo">✨ Texticles</div>
@@ -39,28 +39,28 @@
         <div class="progress-bar"></div>
       </div>
       <div class="loading-text">
-        <div class="text-item active" data-i18n="loading-text-1">Генерируем частицы</div>
-        <div class="text-item" data-i18n="loading-text-2">Оптимизируем работу под ваше устройство</div>
-        <div class="text-item" data-i18n="loading-text-3">Подготавливаем для вас</div>
-        <div class="text-item" data-i18n="loading-text-4">Заканчиваем</div>
+        <div class="text-item active" data-i18n="loading-text-1">Generating particles</div>
+        <div class="text-item" data-i18n="loading-text-2">Optimizing for your device</div>
+        <div class="text-item" data-i18n="loading-text-3">Preparing for you</div>
+        <div class="text-item" data-i18n="loading-text-4">Finishing</div>
       </div>
-      <div class="skip-text" data-i18n="skip-text">Нажмите ESC для пропуска загрузки</div>
+      <div class="skip-text" data-i18n="skip-text">Press ESC to skip loading</div>
     </div>
   </div>
 
-  <!-- Основное содержимое -->
+  <!-- Main Content -->
   <div class="main-content" id="mainContent">
     <div class="app">
       <div class="canvas-wrap" id="stage" style="max-height:90vh; position: relative;">
         <canvas id="c"></canvas>
 
         <div id="fpsOverlay" class="overlay hidden">FPS: 60</div>
-        <div id="particleCountOverlay" class="overlay hidden">Частиц: 0</div>
+        <div id="particleCountOverlay" class="overlay hidden">Particles: 0</div>
 
-        <button id="fullscreenBtn" class="fullscreen-btn" title="Во весь экран (F)" aria-label="Во весь экран"
+        <button id="fullscreenBtn" class="fullscreen-btn" title="Fullscreen (F)" aria-label="Fullscreen"
           style="position: absolute; right: 12px; top: 12px; z-index: 60; border: none; padding: 6px 8px; border-radius: 6px; cursor: pointer;">⤢</button>
 
-        <!-- Кастомный курсор -->
+        <!-- Custom Cursor -->
         <div id="custom-cursor"></div>
       </div>
 
@@ -68,110 +68,111 @@
         <div class="panel">
           <h2 data-i18n="title">✨ Texticles</h2>
 
-          <!-- Остальное содержимое панели остается без изменений -->
+          <!-- Text Section -->
           <div class="section">
-            <div class="section-title" data-i18n="text_section">Текст</div>
+            <div class="section-title" data-i18n="text_section">Text</div>
             <div class="input-group">
-              <label for="txt" data-i18n="text_input_label">Введите текст или эмодзи</label>
-              <textarea id="txt" placeholder="Чтобы ввести эмодзи нажмите Win+. или введите текст"
-                data-i18n="text_input_placeholder">🩷</textarea>
+              <label for="txt" data-i18n="text_input_label">Enter text or emoji</label>
+              <textarea id="txt" placeholder="To enter emoji press Win+. or type text"
+                data-i18n="text_input_placeholder">🍀</textarea>
               <div class="emoji-preview" id="emojiPreview"></div>
             </div>
 
             <div class="row">
               <button class="btn" id="apply">
-                <span data-i18n="apply_button">Применить</span>
+                <span data-i18n="apply_button">Apply</span>
               </button>
               <button class="btn btn-outline" id="shuffle">
-                <span data-i18n="shuffle_button">Разбросать</span>
+                <span data-i18n="shuffle_button">Shuffle</span>
               </button>
             </div>
           </div>
 
-          <!-- Остальные секции остаются без изменений -->
+          <!-- Appearance Section -->
           <div class="section">
-            <div class="section-title" data-i18n="appearance_section">Внешний вид</div>
+            <div class="section-title" data-i18n="appearance_section">Appearance</div>
             <div class="input-group">
-              <label for="mouseMode" data-i18n="mouse_mode_label">Реакция на курсор</label>
+              <label for="mouseMode" data-i18n="mouse_mode_label">Cursor reaction</label>
               <select id="mouseMode">
-                <option value="repel" data-i18n="mouse_mode_repel">Отталкивать ✨</option>
-                <option value="attract" data-i18n="mouse_mode_attract">Притягивать 🎯</option>
-                <option value="swirl" data-i18n="mouse_mode_swirl">Вихрь 🌪️</option>
-                <option value="pulse" data-i18n="mouse_mode_pulse">Пульсация 💓</option>
-                <option value="gravity" data-i18n="mouse_mode_gravity">Гравитация ⚫</option>
-                <option value="neural" data-i18n="mouse_mode_neural">Нейросеть 🧠</option>
-                <option value="symmetry" data-i18n="mouse_mode_symmetry">Симметрия 🔄</option>
-                <option value="chaos" data-i18n="mouse_mode_chaos">Хаос 🔥</option>
-                <option value="none" data-i18n="mouse_mode_none">Выключено</option>
+                <option value="repel" data-i18n="mouse_mode_repel">Repel ✨</option>
+                <option value="attract" data-i18n="mouse_mode_attract">Attract 🎯</option>
+                <option value="swirl" data-i18n="mouse_mode_swirl">Swirl 🌪️</option>
+                <option value="pulse" data-i18n="mouse_mode_pulse">Pulse 💓</option>
+                <option value="gravity" data-i18n="mouse_mode_gravity">Gravity ⚫</option>
+                <option value="neural" data-i18n="mouse_mode_neural">Neural network 🧠</option>
+                <option value="symmetry" data-i18n="mouse_mode_symmetry">Symmetry 🔄</option>
+                <option value="chaos" data-i18n="mouse_mode_chaos">Chaos 🔥</option>
+                <option value="none" data-i18n="mouse_mode_none">Disabled</option>
               </select>
             </div>
 
             <div class="input-group">
-              <label for="colorMode" data-i18n="color_mode_label">Цветовой режим</label>
+              <label for="colorMode" data-i18n="color_mode_label">Color mode</label>
               <select id="colorMode">
-                <option value="emoji" data-i18n="color_mode_emoji">Цвет эмодзи 🎨</option>
-                <option value="monochrome" data-i18n="color_mode_monochrome">Монохром ⚫️⚪️</option>
-                <option value="gradient" data-i18n="color_mode_gradient">Градиент 🌈</option>
-                <!-- Новые режимы -->
-                <option value="fire" data-i18n="color_mode_fire">Огонь 🔥</option>
-                <option value="ice" data-i18n="color_mode_ice">Лёд ❄️</option>
-                <option value="neon" data-i18n="color_mode_neon">Неон 💡</option>
-                <option value="pastel" data-i18n="color_mode_pastel">Пастель 🎀</option>
-                <option value="galaxy" data-i18n="color_mode_galaxy">Галактика 🌌</option>
-                <option value="forest" data-i18n="color_mode_forest">Лес 🌲</option>
-                <option value="ocean" data-i18n="color_mode_ocean">Океан 🌊</option>
-                <option value="lava" data-i18n="color_mode_lava">Лава 🌋</option>
+                <option value="emoji" data-i18n="color_mode_emoji">Emoji color 🎨</option>
+                <option value="monochrome" data-i18n="color_mode_monochrome">Monochrome ⚫️⚪️</option>
+                <option value="gradient" data-i18n="color_mode_gradient">Gradient 🌈</option>
+                <option value="fire" data-i18n="color_mode_fire">Fire 🔥</option>
+                <option value="ice" data-i18n="color_mode_ice">Ice ❄️</option>
+                <option value="neon" data-i18n="color_mode_neon">Neon 💡</option>
+                <option value="pastel" data-i18n="color_mode_pastel">Pastel 🎀</option>
+                <option value="galaxy" data-i18n="color_mode_galaxy">Galaxy 🌌</option>
+                <option value="forest" data-i18n="color_mode_forest">Forest 🌲</option>
+                <option value="ocean" data-i18n="color_mode_ocean">Ocean 🌊</option>
+                <option value="lava" data-i18n="color_mode_lava">Lava 🌋</option>
               </select>
             </div>
           </div>
 
+          <!-- Presets Section -->
           <div class="section">
-            <div class="section-title" data-i18n="presets_section">Пресеты</div>
+            <div class="section-title" data-i18n="presets_section">Presets</div>
             <div class="preset-buttons">
               <button class="preset-btn" data-density="2" data-size="6" data-speed="0.3" data-interaction="2">
-                <span data-i18n="preset_super_performance">⏩ Супер производительный</span>
+                <span data-i18n="preset_super_performance">⏩ Super performance</span>
               </button>
               <button class="preset-btn" data-density="7" data-size="5" data-speed="5" data-interaction="6">
-                <span data-i18n="preset_chaos">💥 Хаос</span>
+                <span data-i18n="preset_chaos">💥 Chaos</span>
               </button>
               <button class="preset-btn" data-density="3" data-size="3.5" data-speed="0.25" data-interaction="2.5">
-                <span data-i18n="preset_zen_garden">🧘 Дзен сад</span>
+                <span data-i18n="preset_zen_garden">🧘 Zen garden</span>
               </button>
               <button class="preset-btn" data-density="9" data-size="1.5" data-speed="0.5" data-interaction="3">
-                <span data-i18n="preset_dense_space">🌟 Плотный космос</span>
+                <span data-i18n="preset_dense_space">🌟 Dense space</span>
               </button>
               <button class="preset-btn" data-density="3" data-size="4" data-speed="0.1" data-interaction="1">
-                <span data-i18n="preset_meditation">🐌 Медитация</span>
+                <span data-i18n="preset_meditation">🐌 Meditation</span>
               </button>
               <button class="preset-btn" data-density="4" data-size="2" data-speed="1" data-interaction="9">
-                <span data-i18n="preset_powerful_magnet">💪 Мощный магнит</span>
+                <span data-i18n="preset_powerful_magnet">💪 Powerful magnet</span>
               </button>
               <button class="preset-btn" data-density="5" data-size="3" data-speed="8" data-interaction="5">
-                <span data-i18n="preset_hyperspeed_vortex">🚀 Гиперскоростной вихрь</span>
+                <span data-i18n="preset_hyperspeed_vortex">🚀 Hyperspeed vortex</span>
               </button>
               <button class="preset-btn" data-density="1" data-size="1" data-speed="0.2" data-interaction="0.5">
-                <span data-i18n="preset_microworld">🔍 Микромир</span>
+                <span data-i18n="preset_microworld">🔍 Microworld</span>
               </button>
               <button class="preset-btn" data-density="6" data-size="10" data-speed="0.4" data-interaction="4">
-                <span data-i18n="preset_giant_planets">🪐 Гигантские планеты</span>
+                <span data-i18n="preset_giant_planets">🪐 Giant planets</span>
               </button>
               <button class="preset-btn" data-density="5" data-size="5" data-speed="1" data-interaction="5">
-                <span data-i18n="preset_balance">⚖️ Баланс</span>
+                <span data-i18n="preset_balance">⚖️ Balance</span>
               </button>
               <button class="preset-btn" data-density="2" data-size="8" data-speed="0.15" data-interaction="1.5">
-                <span data-i18n="preset_ghost_whisper">😶 Призрачный шёпот</span>
+                <span data-i18n="preset_ghost_whisper">😶 Ghost whisper</span>
               </button>
               <button class="preset-btn" data-density="10" data-size="2.5" data-speed="10" data-interaction="10">
-                <span data-i18n="preset_absolute_storm">🌪️ Абсолютный шторм</span>
+                <span data-i18n="preset_absolute_storm">🌪️ Absolute storm</span>
               </button>
             </div>
           </div>
 
+          <!-- Settings Section -->
           <div class="section">
-            <div class="section-title" data-i18n="settings_section">Настройки</div>
+            <div class="section-title" data-i18n="settings_section">Settings</div>
 
             <div class="input-group">
-              <label for="density" data-i18n="density_label">Плотность частиц</label>
+              <label for="density" data-i18n="density_label">Particle density</label>
               <div class="slider-container">
                 <input id="density" type="range" min="1" max="10" step="1" />
                 <div class="slider-value" id="densityValue">3</div>
@@ -179,7 +180,7 @@
             </div>
 
             <div class="input-group">
-              <label for="size" data-i18n="size_label">Размер частиц</label>
+              <label for="size" data-i18n="size_label">Particle size</label>
               <div class="slider-container">
                 <input id="size" type="range" min="1" max="10" step="0.5" />
                 <div class="slider-value" id="sizeValue">7.5</div>
@@ -187,7 +188,7 @@
             </div>
 
             <div class="input-group">
-              <label for="speed" data-i18n="speed_label">Скорость анимации</label>
+              <label for="speed" data-i18n="speed_label">Animation speed</label>
               <div class="slider-container">
                 <input id="speed" type="range" min="0.1" max="10" step="0.1" />
                 <div class="slider-value" id="speedValue">0.3</div>
@@ -195,7 +196,7 @@
             </div>
 
             <div class="input-group">
-              <label for="interaction" data-i18n="interaction_label">Сила взаимодействия</label>
+              <label for="interaction" data-i18n="interaction_label">Interaction strength</label>
               <div class="slider-container">
                 <input id="interaction" type="range" min="0.5" max="10" step="0.5" />
                 <div class="slider-value" id="interactionValue">1</div>
@@ -203,11 +204,12 @@
             </div>
           </div>
 
+          <!-- Display Section -->
           <div class="section">
-            <div class="section-title" data-i18n="display_section">Отображение</div>
+            <div class="section-title" data-i18n="display_section">Display</div>
 
             <div class="input-group toggle-group">
-              <label for="showFps" data-i18n="show_fps_label">Показать FPS</label>
+              <label for="showFps" data-i18n="show_fps_label">Show FPS</label>
               <label class="toggle">
                 <input id="showFps" type="checkbox">
                 <span class="toggle-slider"></span>
@@ -215,7 +217,7 @@
             </div>
 
             <div class="input-group toggle-group">
-              <label for="showParticleCount" data-i18n="show_particle_count_label">Показать счетчик частиц</label>
+              <label for="showParticleCount" data-i18n="show_particle_count_label">Show particle counter</label>
               <label class="toggle">
                 <input id="showParticleCount" type="checkbox">
                 <span class="toggle-slider"></span>
@@ -223,7 +225,7 @@
             </div>
 
             <div class="input-group">
-              <label for="themeSelect" data-i18n="theme_label">Тема оформления</label>
+              <label for="themeSelect" data-i18n="theme_label">Theme</label>
               <select id="themeSelect">
                 <option value="aurora-light" data-i18n="theme_aurora_light">Aurora Light 🐻‍❄️</option>
                 <option value="electric-neon" data-i18n="theme_electric_neon">Electric Neon ⚡</option>
@@ -241,11 +243,12 @@
             </div>
           </div>
 
+          <!-- Language Selection -->
           <div class="input-group">
-            <label for="languageSelect" data-i18n="language_label">Язык интерфейса</label>
+            <label for="languageSelect" data-i18n="language_label">Interface language</label>
             <select id="languageSelect">
-              <option value="ru">Русский 🇷🇺</option>
               <option value="en">English 🇬🇧</option>
+              <option value="ru">Русский 🇷🇺</option>
               <option value="es">Español 🇪🇸</option>
               <option value="de">Deutsch 🇩🇪</option>
               <option value="fr">Français 🇫🇷</option>
@@ -256,24 +259,25 @@
             </select>
           </div>
 
+          <!-- Stats -->
           <div class="stats">
-            <span id="particleCount" data-i18n="particle_count">Частиц: 0</span>
+            <span id="particleCount" data-i18n="particle_count">Particles: 0</span>
             <span id="fps" data-i18n="fps">FPS: 60</span>
           </div>
 
-          <footer data-i18n="footer">Перетаскивайте частицы! • Поддерживает эмодзи<br>© Все права защищены Texticles
-            2025
-          </footer>
+          <!-- Footer -->
+          <footer data-i18n="footer">Drag particles! • Supports emoji<br>© All rights reserved Texticles 2025</footer>
         </div>
       </div>
     </div>
+
+    <!-- Mobile Overlay -->
     <div id="mobile-overlay">
       <div class="overlay-content">
         <div class="logo" data-i18n="mobile_title">✨ Texticles</div>
         <div class="message">
-          <p data-i18n="mobile_message_1">Версия для вашего устройства в разработке</p>
-          <p data-i18n="mobile_message_2">Для полного доступа к функциям сайта<br>пожалуйста, используйте устройство с
-            мышью</p>
+          <p data-i18n="mobile_message_1">Version for your device is in development</p>
+          <p data-i18n="mobile_message_2">For full access to site features<br>please use a device with a mouse</p>
         </div>
       </div>
     </div>
