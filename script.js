@@ -15,6 +15,7 @@
     const elements = {
         canvas: document.getElementById('c'),
         wrap: document.getElementById('stage'),
+        cursorDot: document.getElementById('cursorDot'),
         fsBtn: document.getElementById('fullscreenBtn'),
         txt: document.getElementById('txt'),
         density: document.getElementById('density'),
@@ -715,36 +716,29 @@
                     state.mouse.vy = (state.mouse.y - state.mouse.py) * 0.5;
                 }
                 state.mouseUpdateScheduled = false;
+
+                // position custom cursor dot in viewport coords
+                if (elements.cursorDot) {
+                    elements.cursorDot.style.left = e.clientX + 'px';
+                    elements.cursorDot.style.top = e.clientY + 'px';
+                }
             });
         }
     }
 
     function initEventListeners() {
         // Mouse events
+        elements.canvas.addEventListener('mouseenter', (e) => {
+            if (elements.cursorDot) elements.cursorDot.classList.add('visible');
+        });
         elements.canvas.addEventListener('mousemove', handleMouseMove);
         elements.canvas.addEventListener('mouseleave', () => {
             state.mouse.x = state.mouse.y = -9999;
             state.mouse.vx = state.mouse.vy = 0;
+            if (elements.cursorDot) elements.cursorDot.classList.remove('visible');
         });
 
-        // Custom cursor
-        const stage = document.getElementById('stage');
-        const cursor = document.getElementById('custom-cursor');
-        if (stage && cursor) {
-            stage.addEventListener('mouseenter', () => {
-                cursor.style.display = 'block';
-                stage.style.cursor = 'none';
-            });
-            stage.addEventListener('mouseleave', () => {
-                cursor.style.display = 'none';
-                stage.style.cursor = 'default';
-            });
-            stage.addEventListener('mousemove', e => {
-                const rect = stage.getBoundingClientRect();
-                cursor.style.left = (e.clientX - rect.left) + 'px';
-                cursor.style.top = (e.clientY - rect.top) + 'px';
-            });
-        }
+        // Custom cursor removed
 
         // Resize
         window.addEventListener('resize', () => {
