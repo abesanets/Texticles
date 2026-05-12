@@ -189,7 +189,6 @@ For commercial use, integration, or licensing inquiries, please contact the auth
 ## 📞 Support & Community
 
 - **GitHub Issues** - For bugs and feature requests
-- **Live Demo** - Test the latest features
 - **Star the Repo** - Show your support for the project
 
 ---
